@@ -60,7 +60,7 @@ class HybridAuthFactory extends AbstractFactory
         
         $container
             ->setDefinition($providerId, new DefinitionDecorator('sllh_hybridauth.authentication.provider.hybridauth'))
-            ->addArgument($this->createHybridAuthAwareUserProvider($container, $id, $config['user_provider']));
+            ->addArgument($this->createHybridAuthAwareUserProvider($container, $id, $config['hybridauth_user_provider']));
             // TODO: add provider map ?
 
         return $providerId;
@@ -163,7 +163,7 @@ class HybridAuthFactory extends AbstractFactory
                     ->thenInvalid("Each providers should have a unique check_path.")
                 ->end()
             ->end()
-            ->arrayNode('user_provider') // TODO: add more providers (orm, fos...)
+            ->arrayNode('hybridauth_user_provider') // TODO: add more providers (orm, fos...)
                 ->isRequired()
                 ->children()
                     ->scalarNode('service')
