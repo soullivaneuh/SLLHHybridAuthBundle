@@ -7,7 +7,8 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
     Symfony\Component\Security\Core\User\UserProviderInterface;
 
 use SLLH\HybridAuthBundle\Security\Core\Authentification\Token\HybridAuthToken,
-    SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap;
+    SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
+    SLLH\HybridAuthBundle\Security\Core\User\HybridAuthAwareUserProviderInterface;
 
 /**
  * Description of HybridAuthProvider
@@ -17,18 +18,25 @@ use SLLH\HybridAuthBundle\Security\Core\Authentification\Token\HybridAuthToken,
 class HybridAuthProvider implements AuthenticationProviderInterface
 {
     /**
-     * @var HybridAuthProviderMap
-     */
-    private $providerMap;
-    
-    /**
-     * @var UserProviderInterface
+     * @var HybridAuthAwareUserProviderInterface
      */
     private $userProvider;
 
-    public function __construct()
+    /**
+     * @var HybridAuthProviderMap
+     */
+    private $providerMap;
+
+    /**
+     * Constructor
+     * 
+     * @param HybridAuthAwareUserProviderInterface $userProvider
+     * @param HybridAuthProviderMap $providerMap 
+     */
+    public function __construct(HybridAuthAwareUserProviderInterface $userProvider, HybridAuthProviderMap $providerMap)
     {
-        
+        $this->userProvider = $userProvider;
+        $this->providerMap = $providerMap;
     }
     
     /**
@@ -36,7 +44,7 @@ class HybridAuthProvider implements AuthenticationProviderInterface
      */
     public function authenticate(TokenInterface $token)
     {
-        
+        // TODO: auth...
     }
     
     /**
