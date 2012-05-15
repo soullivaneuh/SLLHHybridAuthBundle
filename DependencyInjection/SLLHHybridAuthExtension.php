@@ -17,6 +17,7 @@ use Symfony\Component\Config\FileLocator,
  */
 class SLLHHybridAuthExtension extends Extension
 {
+    // TODO: Add a connect api service like '/social/{name}/api/me/contact_lists'
     /**
      * {@inheritDoc}
      */
@@ -32,6 +33,12 @@ class SLLHHybridAuthExtension extends Extension
             }
         }
         $container->setParameter('sllh_hybridauth.config', $config['hybridauth_config']);
+
+        $providers_names = array();
+        foreach ($config['hybridauth_config'] as $name => $p) {
+            $providers_names[] = $name;
+        }
+        $container->setParameter('sllh_hybridauth.providers', $providers_name);
         
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
     }

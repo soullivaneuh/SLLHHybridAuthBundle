@@ -39,7 +39,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('debug_file')
                             ->defaultValue("")
                         ->end()
-                        ->arrayNode('providers')
+                        ->arrayNode('providers') // TODO: add params for authenticate => http://hybridauth.sourceforge.net/apidoc.html
                             ->isRequired(true)
                             ->useAttributeAsKey('name')
                             ->prototype('array')
