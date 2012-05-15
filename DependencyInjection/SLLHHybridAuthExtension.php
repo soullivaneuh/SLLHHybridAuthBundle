@@ -41,6 +41,7 @@ class SLLHHybridAuthExtension extends Extension
 //        $container->setParameter('sllh_hybridauth.providers', $providers_names);
         
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
+        $loader->load('hybridauth.xml');
     }
     
     /**

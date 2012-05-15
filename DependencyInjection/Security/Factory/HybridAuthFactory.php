@@ -186,7 +186,7 @@ class HybridAuthFactory extends AbstractFactory
      */
     protected function getListenerId()
     {
-        return 'shhl_hybridauth.authentication.listener.hybridauth';
+        return 'sllh_hybridauth.authentication.listener.hybridauth';
     }
 
     /**
