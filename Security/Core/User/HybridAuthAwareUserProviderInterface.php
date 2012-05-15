@@ -2,6 +2,8 @@
 
 namespace SLLH\HybridAuthBundle\Security\Core\User;
 
+use SLLH\HybridAuthBundle\HybridAuth\HybridAuthResponseInterface;
+
 /**
  * HybridAuthAwareUserProviderInterface
  * 
@@ -10,9 +12,9 @@ namespace SLLH\HybridAuthBundle\Security\Core\User;
 interface HybridAuthAwareUserProviderInterface
 {
     /**
-     * Loads the user by a given UserResponseInterface object.
+     * Loads the user by a given HybridAuthResponseInterface object.
      *
-     * @param UserResponseInterface $response
+     * @param HybridAuthResponseInterface $response
      *
      * @return UserInterface
      *
