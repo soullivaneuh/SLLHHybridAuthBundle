@@ -17,15 +17,51 @@ use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractF
 class HybridAuthFactory extends AbstractFactory
 {
     /**
+     * Creates a resource owner map for the given configuration.
+     *
+     * @param ContainerBuilder $container Container to build for
+     * @param string           $id        Firewall id
+     * @param array            $config    Configuration
+     */
+    protected function createHybridAuthProviderMap(ContainerBuilder $container, $id, array $config)
+    {
+        $providers = array();
+        foreach ($config['providers_check_path'] as $name => $checkPath) {
+            $providers[$name] = $checkPath;
+        }
+        $container->setParameter('sllh_hybridauth.provider_map.configured.'.$id, $providers);
+
+        $providerMapDefinition = $container
+            ->register($this->getHybridAuthProviderMapReference($id), '%sllh_hybridauth.provider_map.class%')
+            ->addArgument(new Reference('service_container'))
+            ->addArgument(new Reference('security.http_utils'))
+            ->addArgument(new Parameter('sllh_hybridauth.provider_map.configured.'.$id))
+        ;
+    }
+    
+    /**
+     * Get a reference to the HybridAuth provider map
+     * 
+     * @param string $id 
+     */
+    protected function getHybridAuthProviderMapReference($id)
+    {
+        return new Reference('sllh_hybridauth.provider_map.'.$id);
+    }
+    
+    /**
      * {@inheritDoc}
      */
     protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
     {
         $providerId = 'sllh_hybridauth.authentication.provider.hybridauth.'.$id;
         
+        $this->createHybridAuthProviderMap($container, $id, $config);
+        
         $container
             ->setDefinition($providerId, new DefinitionDecorator('sllh_hybridauth.authentication.provider.hybridauth'))
             ->addArgument($this->createHybridAuthAwareUserProvider($container, $id, $config['user_provider']));
+            // TODO: add provider map ?
 
         return $providerId;
     }
@@ -80,12 +116,13 @@ class HybridAuthFactory extends AbstractFactory
         $listenerId = parent::createListener($container, $id, $config, $userProvider);
 
         $checkPaths = array(); // TODO: recuperer les noms des providers !
-        foreach ($container->getParameter('sllh_hybridauth.providers') as $provider) {
-            $checkPaths[] = $config['check_prefix_path'].'/'.strtolower($provider);
+        foreach ($config['providers_check_path'] as $checkPath) {
+            $checkPaths[] = $checkPath;
             // TOTO: check if user set '/' in the end of the prefix
         }
 
         $container->getDefinition($listenerId)
+            ->addMethodCall('setProviderMap', array($this->getHybridAuthProviderMapReference($id)))
             ->addMethodCall('setCheckPaths', array($checkPaths));
 
         return $listenerId;
@@ -105,9 +142,27 @@ class HybridAuthFactory extends AbstractFactory
                 ->cannotBeEmpty()
                 ->isRequired()
             ->end()
-            ->scalarNode('check_prefix_path')
-                ->cannotBeEmpty()
+            ->arrayNode('providers_check_path')
                 ->isRequired()
+                ->useAttributeAsKey('name')
+                ->prototype('scalar')
+                ->end()
+                ->validate()
+                    ->ifTrue(function($c) {
+                        $checkPaths = array();
+                        foreach ($c as $name => $checkPath) {
+                            if (in_array($checkPath, $checkPaths)) {
+
+                                return true;
+                            }
+
+                            $checkPaths[] = $checkPath;
+                        }
+
+                        return false;
+                    })
+                    ->thenInvalid("Each providers should have a unique check_path.")
+                ->end()
             ->end()
             ->arrayNode('user_provider') // TODO: add more providers (orm, fos...)
                 ->isRequired()

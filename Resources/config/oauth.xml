@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="sllh_hybridauth.authentication.listener.hybridauth.class">SLLH\HybridAuthBundle\Security\Http\Firewall\HybridAuthListener</parameter>
         <parameter key="sllh_hybridauth.authentication.provider.hybridauth.class">SLLH\HybridAuthBundle\Security\Core\Authentication\Provider\HybridAuthProvider</parameter>
+        <parameter key="sllh_hybridauth.provider_map.class">SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap</parameter>
 <!--        <parameter key="sllh_hybridauth.authentication.entry_point.hybridauth.class">SLLH\HybridAuthBundle\Security\Http\EntryPoint\HybridAuthEntryPoint</parameter>-->
     </parameters>
 

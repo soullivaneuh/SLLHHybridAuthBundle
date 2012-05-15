@@ -3,7 +3,8 @@
 namespace SLLH\HybridAuthBundle\Security\Http;
 
 use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\Security\Http\HttpUtils;
+    Symfony\Component\Security\Http\HttpUtils,
+    Symfony\Component\DependencyInjection\ContainerInterface;
 
 use \Hybrid_Auth;
 
@@ -15,14 +16,14 @@ use \Hybrid_Auth;
 class HybridAuthProviderMap
 {
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+    
+    /**
      * @var HttpUtils
      */
     private $httpUtils;
-    
-    /**
-     * @var array
-     */
-    private $config;
     
     /**
      * @var array 
@@ -36,10 +37,11 @@ class HybridAuthProviderMap
      * @param array     $config             HybridAuth config
      * @param array     $providers          Configured providers with checkPaths in security configuration file
      */
-    public function __construct(HttpUtils $httpUtils, array $config)
+    public function __construct(ContainerInterface $container, HttpUtils $httpUtils, array $providers)
     {
+        $this->container = $container;
         $this->httpUtils = $httpUtils;
-        $this->config = $config;
+        $this->providers = $providers;
     }
     
     /**
@@ -51,11 +53,12 @@ class HybridAuthProviderMap
      */
     public function getProviderAdapterByName($name)
     {
-        if (!array_key_exists($name, $this->config['providers'])) {
+        $hybridauth_config = $this->container('sllh_hybridauth.config');
+        if (!array_key_exists($name, $hybridauth_config['providers'])) {
             return null;
         }
         
-        $hybridauth = new Hybrid_Auth($this->config);
+        $hybridauth = new Hybrid_Auth($hybridauth_config);
         
         return $hybridauth->authenticate($name); // TODO: add additional params ($this->config['providers'][$name]['auth_params'])
     }

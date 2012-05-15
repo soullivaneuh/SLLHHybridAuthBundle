@@ -5,6 +5,8 @@ namespace SLLH\HybridAuthBundle\Security\Http\Firewall;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener,
     Symfony\Component\HttpFoundation\Request;
 
+use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap;
+
 /**
  * Description of HybridAuthListener
  *
@@ -13,9 +15,24 @@ use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener,
 class HybridAuthListener extends AbstractAuthentificationListener
 {
     /**
+     * @var HybridAuthProviderMap
+     */
+    private $providerMap;
+    
+    /**
      * @var array
      */
     private $checkPaths;
+    
+    /**
+     * Set providerMap, called from HybridAuthFactory
+     * 
+     * @param HybridAuthProviderMap $providerMap
+     */
+    public function setProviderMap(HybridAuthProviderMap $providerMap)
+    {
+        $this->providerMap = $providerMap;
+    }
     
     /**
      * Set checkPaths, called from HybridAuthFactory
