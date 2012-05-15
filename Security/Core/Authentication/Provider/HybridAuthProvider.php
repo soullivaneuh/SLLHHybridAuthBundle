@@ -1,12 +1,12 @@
 <?php
 
-namespace SLLH\HybridAuthBundle\Security\Core\Authentification\Provider;
+namespace SLLH\HybridAuthBundle\Security\Core\Authentication\Provider;
 
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface,
     Symfony\Component\Security\Core\Authentication\Token\TokenInterface,
     Symfony\Component\Security\Core\User\UserProviderInterface;
 
-use SLLH\HybridAuthBundle\Security\Core\Authentification\Token\HybridAuthToken,
+use SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken,
     SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
     SLLH\HybridAuthBundle\Security\Core\User\HybridAuthAwareUserProviderInterface;
 

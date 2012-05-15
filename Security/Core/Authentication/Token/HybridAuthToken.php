@@ -1,6 +1,6 @@
 <?php
 
-namespace SLLH\HybridAuthBundle\Security\Core\Authentification\Token;
+namespace SLLH\HybridAuthBundle\Security\Core\Authentication\Token;
 
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
