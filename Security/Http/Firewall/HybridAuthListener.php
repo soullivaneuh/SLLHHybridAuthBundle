@@ -13,6 +13,21 @@ use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener,
 class HybridAuthListener extends AbstractAuthentificationListener
 {
     /**
+     * @var array
+     */
+    private $checkPaths;
+    
+    /**
+     * Set checkPaths, called from HybridAuthFactory
+     * 
+     * @param array $checkPaths 
+     */
+    public function setCheckPaths(array $checkPaths)
+    {
+        $this->checkPaths = $checkPaths;
+    }
+    
+    /**
      * {@inheritDoc}
      */
     public function requiresAuthentication(Request $request)
