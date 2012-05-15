@@ -29,14 +29,14 @@ interface HybridAuthResponseInterface
     /**
      * Get user social network contacts list 
      * 
-     * @return array
+     * @return null|array
      */
     public function getUserContactsList();
     
     /**
      * Get user social network activity
      * 
-     * @return array 
+     * @return null|array 
      */
     public function getUserActivity();
     
