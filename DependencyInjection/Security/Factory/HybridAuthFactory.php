@@ -115,10 +115,9 @@ class HybridAuthFactory extends AbstractFactory
     {
         $listenerId = parent::createListener($container, $id, $config, $userProvider);
 
-        $checkPaths = array(); // TODO: recuperer les noms des providers !
+        $checkPaths = array();
         foreach ($config['providers_check_path'] as $checkPath) {
             $checkPaths[] = $checkPath;
-            // TOTO: check if user set '/' in the end of the prefix
         }
 
         $container->getDefinition($listenerId)
