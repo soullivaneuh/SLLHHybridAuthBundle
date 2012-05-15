@@ -22,6 +22,60 @@ class Configuration implements ConfigurationInterface
         $builder = new TreeBuilder();
         
         $rootNode = $builder->root('sllh_hybridauth');
+
+        $rootNode
+        // FIXME : xml adptable config
+//            ->fixXmlConfig('hybridauth_config')
+            ->children()
+                ->arrayNode('hybridauth_config')
+                    ->isRequired(true)
+                    ->children()
+                        ->scalarNode('base_url')
+                            ->cannotBeEmpty()
+                        ->end()
+                        ->booleanNode('debug_mode')
+                            ->defaultValue(false)
+                        ->end()
+                        ->scalarNode('debug_file')
+                            ->defaultValue("")
+                        ->end()
+                        ->arrayNode('providers')
+                            ->isRequired(true)
+                            ->useAttributeAsKey('name')
+                            ->prototype('array')
+                                ->children()
+                                    ->scalarNode('enabled')
+                                        ->defaultValue(true)
+                                    ->end()
+                                    ->arrayNode('scope')
+                                        ->prototype('scalar')
+                                        ->end()
+                                    ->end()
+                                    ->arrayNode('keys')
+                                        ->isRequired(true)
+                                        ->children()
+                                            ->scalarNode('id')
+                                            ->end()
+                                            ->scalarNode('key')
+                                            ->end()
+                                            ->scalarNode('secret')
+                                                ->cannotBeEmpty()
+                                            ->end()
+                                        ->end()
+                                        ->validate()
+                                            ->ifTrue(function($k) {
+                                                return !isset($k['id']) && !isset($k['key']);
+                                            })
+                                            ->thenInvalid('Bad keys %s')
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
         
         return $builder;
     }

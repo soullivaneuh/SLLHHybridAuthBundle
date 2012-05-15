@@ -25,6 +25,14 @@ class SLLHHybridAuthExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
         
+        // Clean and set HybridAuth config
+        foreach ($config['hybridauth_config']['providers'] as $name => $provider) {
+            if (isset($provider['scope']) && empty($provider['scope'])) { // TODO: find an other way with the three builder
+                unset($config['hybridauth_config']['providers'][$name]['scope']);
+            }
+        }
+        $container->setParameter('sllh_hybridauth.config', $config['hybridauth_config']);
+        
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
     }
     
