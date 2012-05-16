@@ -12,7 +12,7 @@ use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap;
  *
  * @author Sullivan SENECHAL <soullivaneuh@gmail.com>
  */
-class HybridAuthListener extends AbstractAuthentificationListener
+class HybridAuthListener extends AbstractAuthenticationListener
 {
     /**
      * @var HybridAuthProviderMap
