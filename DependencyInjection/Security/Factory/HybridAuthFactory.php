@@ -54,12 +54,13 @@ class HybridAuthFactory extends AbstractFactory
      */
     protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
     {
-        $providerId = 'sllh_hybridauth.authentication.provider.hybridauth.'.$id;
+//        $providerId = 'sllh_hybridauth.authentication.provider.hybridauth.'.$id;
+        $providerId = 'security.authentication.provider.hybridauth.'.$id;
         
         $this->createHybridAuthProviderMap($container, $id, $config);
         
         $container
-            ->setDefinition($providerId, new DefinitionDecorator('sllh_hybridauth.authentication.provider.hybridauth'))
+            ->setDefinition($providerId, new DefinitionDecorator('security.authentication.provider.hybridauth'))
             ->addArgument($this->createHybridAuthAwareUserProvider($container, $id, $config['hybridauth_user_provider']))
             ->addArgument($this->getHybridAuthProviderMapReference($id))
         ;
@@ -104,7 +105,8 @@ class HybridAuthFactory extends AbstractFactory
 //        $entryPointDefinition = $container
 //            ->setDefinition($entryPointId, new DefinitionDecorator('sllh_hybridauth.authentication.entry_point.hybridauth'))
 //            ->addArgument(new Reference('security.http_utils'))
-//            ->addArgument($config['login_path']);
+//            ->addArgument($config['login_path'])
+//        ;
 //
 //        return $entryPointId;
 //    }
@@ -186,7 +188,7 @@ class HybridAuthFactory extends AbstractFactory
      */
     protected function getListenerId()
     {
-        return 'sllh_hybridauth.authentication.listener.hybridauth';
+        return 'security.authentication.listener.hybridauth';
     }
 
     /**
