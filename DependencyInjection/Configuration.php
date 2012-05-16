@@ -27,6 +27,7 @@ class Configuration implements ConfigurationInterface
         // FIXME : xml adptable config
 //            ->fixXmlConfig('hybridauth_config')
             ->children()
+                ->scalarNode('firewall_name')->defaultValue(false)->end()
                 ->arrayNode('hybridauth_config')
                     ->isRequired(true)
                     ->children()

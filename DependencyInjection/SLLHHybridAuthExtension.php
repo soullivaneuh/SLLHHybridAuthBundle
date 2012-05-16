@@ -23,9 +23,14 @@ class SLLHHybridAuthExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
+        $loader->load('hybridauth.xml');
+
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
         
+        $container->setParameter('sllh_hybridauth.firewall_name', $config['firewall_name']);
+
         // Clean and set HybridAuth config
         foreach ($config['hybridauth_config']['providers'] as $name => $provider) {
             if (isset($provider['scope']) && empty($provider['scope'])) { // TODO: find an other way with the three builder
@@ -39,9 +44,6 @@ class SLLHHybridAuthExtension extends Extension
 //            $providers_names[] = $name;
 //        }
 //        $container->setParameter('sllh_hybridauth.providers', $providers_names);
-        
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
-        $loader->load('hybridauth.xml');
     }
     
     /**
