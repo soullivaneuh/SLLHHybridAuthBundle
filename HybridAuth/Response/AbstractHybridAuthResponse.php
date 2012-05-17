@@ -6,6 +6,8 @@ use SLLH\HybridAuthBundle\HybridAuth\HybridAuthResponseInterface;
 
 use \Hybrid_Provider_Adapter;
 
+use \DateTime;
+
 /**
  * AbstractHybridAuthResponse
  *
@@ -17,6 +19,11 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
      * @var Hybrid_Provider_Adapter 
      */
     protected $adapter;
+
+    /**
+     * @var Hybrid_User_Profile
+     */
+    protected $userProfile;
     
     /**
      * Constructor
@@ -26,6 +33,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     public function __construct(Hybrid_Provider_Adapter $adapter)
     {
         $this->adapter = $adapter;
+        $this->userProfile = $this->adapter->getUserProfile();
     }
     
     /**
@@ -33,15 +41,61 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
      */
     public function getIdentifier()
     {
-        return $this->adapter->getUserProfile()->identifier;
+        return $this->getUserProfile()->identifier;
     }
 
     /**
      * {@inheritDoc}
      */
+    public function getUsername()
+    {
+        return $this->getUserProfile()->displayName;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getEmail()
+    {
+        return $this->getUserProfile()->email;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getFirstName()
+    {
+        return $this->getUserProfile()->firstName;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getLastName()
+    {
+        return $this->getUserProfile()->lastName;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getBirthDay()
+    {
+        $day = $this->getUserProfile()->birthDay;
+        $month = $this->getUserProfile()->birthMonth;
+        $year = $this->getUserProfile()->birthYear;
+        if (!empty($day) && !empty($month) && !empty($year)) {
+            return new DateTime($year.'-'.$month.'-'.$day);
+        }
+        return null;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public function getUserProfile()
     {
-        return $this->adapter->getUserProfile();
+        return $this->userProfile;
     }
 
     /**
