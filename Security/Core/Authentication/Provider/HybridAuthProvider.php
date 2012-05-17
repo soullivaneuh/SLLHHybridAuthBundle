@@ -8,7 +8,8 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 
 use SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken,
     SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
-    SLLH\HybridAuthBundle\Security\Core\User\HybridAuthAwareUserProviderInterface;
+    SLLH\HybridAuthBundle\Security\Core\User\HybridAuthAwareUserProviderInterface,
+    SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse;
 
 /**
  * Description of HybridAuthProvider
@@ -45,13 +46,17 @@ class HybridAuthProvider implements AuthenticationProviderInterface
     public function authenticate(TokenInterface $token)
     {
         $adapter = $this->providerMap->getProviderAdapterByName($token->getProvider());
+                
+        // Making a HybridAuthResponse
+        $response = new HybridAuthResponse($adapter);
         
-        echo '<pre>'."auth:\n";
-        print_r($adapter->getUserProfile());
-        $at = $adapter->getAccessToken();
-        echo $at['access_token']."\n".$token->getCredentials()."\n";
-        die('authenticate');
-        // TODO: auth...
+        // Getting the user by the selected provider
+        $user = $this->userProvider->loadUserByHybridAuthResponse($response);
+        
+        // Creating new token to athenticate use
+        $token = new HybridAuthToken($token->getCredentials(), $token->getProvider(), $user->getRoles());
+        $token->setUser($user);
+        $token->setAuthenticated($authenticated);
     }
     
     /**
