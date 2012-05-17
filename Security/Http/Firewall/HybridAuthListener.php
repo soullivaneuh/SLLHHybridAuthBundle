@@ -5,7 +5,11 @@ namespace SLLH\HybridAuthBundle\Security\Http\Firewall;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener,
     Symfony\Component\HttpFoundation\Request;
 
-use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap;
+use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
+    SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken;
+
+use \Hybrid_Auth;
+use \Hybrid_Provider_Adapter;
 
 /**
  * Description of HybridAuthListener
@@ -49,7 +53,11 @@ class HybridAuthListener extends AbstractAuthenticationListener
      */
     public function requiresAuthentication(Request $request)
     {
-        // TODO: check path by enabled owners
+        foreach ($this->checkPaths as $checkPath) {
+            if ($this->httpUtils->checkRequestPath($request, $checkPath)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -58,8 +66,13 @@ class HybridAuthListener extends AbstractAuthenticationListener
      */
     protected function attemptAuthentication(Request $request)
     {
-        // TODO: get hybridauth authentificationManager
-
+        // Get a Hybrid_Provider_Adapter by user's authentication to the social network with HybridAuth
+        $adapter = $this->providerMap->getProviderAdapterByRequest($request);
+        
+        // Create a token with the social network authentication
+        $adapterToken = $adapter->getAccessToken();
+        $token =  new HybridAuthToken($adapterToken['access_token'], $adapter->id);
+        
         return $this->authenticationManager->authenticate($token);
     }
 }

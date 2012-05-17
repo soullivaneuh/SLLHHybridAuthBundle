@@ -31,6 +31,11 @@ class HybridAuthProviderMap
     private $providers;
     
     /**
+     * @var Hybrid_Auth 
+     */
+    private $hybridauth;
+    
+    /**
      * Constructor
      * 
      * @param HttpUtils $httpUtils          HttpUtils
@@ -42,6 +47,7 @@ class HybridAuthProviderMap
         $this->container = $container;
         $this->httpUtils = $httpUtils;
         $this->providers = $providers;
+        $this->hybridauth = false;
     }
     
     /**
@@ -53,14 +59,14 @@ class HybridAuthProviderMap
      */
     public function getProviderAdapterByName($name)
     {
-        $hybridauth_config = $this->container('sllh_hybridauth.config');
+        $hybridauth_config = $this->container->getParameter('sllh_hybridauth.config');
         if (!array_key_exists($name, $hybridauth_config['providers'])) {
             return null;
-        }
+        } // TODO: Throw directly if provider not configured ?
         
-        $hybridauth = new Hybrid_Auth($hybridauth_config);
-        
-        return $hybridauth->authenticate($name); // TODO: add additional params ($this->config['providers'][$name]['auth_params'])
+        // TODO: Catch error and return null: Authentification failed! Facebook returned an invalide user id.
+        // TODO: add additional params ($this->config['providers'][$name]['auth_params'])
+        return $this->getHybridAuth()->authenticate($name);
     }
     
     /**
@@ -68,16 +74,29 @@ class HybridAuthProviderMap
      * 
      * @param type $request
      * 
-     * @return null|array
+     * @return null|Hybrid_Provider_Adapter
      */
     public function getProviderAdapterByRequest(Request $request)
     {
         foreach ($this->providers as $name => $checkPath) {
             if ($this->httpUtils->checkRequestPath($request, $checkPath)) {
-                return array($this->getProviderAdapterByName($name), $checkPath);
+                return $this->getProviderAdapterByName($name);
             }
         }
         return null;
+    }
+        
+    /**
+     * Gets the Hybrid_Auth api
+     * 
+     * @return type 
+     */
+    public function getHybridAuth()
+    {
+        if ($this->hybridauth === false) {
+            $this->hybridauth = new Hybrid_Auth($this->container->getParameter('sllh_hybridauth.config'));
+        }
+        return $this->hybridauth;
     }
 }
 

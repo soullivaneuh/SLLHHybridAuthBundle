@@ -10,19 +10,26 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
  * @author Sullivan SENECHAL <soullivaneuh@gmail.com>
  */
 class HybridAuthToken extends AbstractToken
-{
+{    
     /**
      * @var string 
      */
-    private $uid;
+    private $accessToken;
     
     /**
-     * @param string $uid         User social network id
-     * @param array  $roles       Roles for the token
+     * @var string 
      */
-    public function __construct($uid, array $roles = array())
+    private $provider;
+    
+    /**
+     * @param string $accessToken   Social Network access token
+     * @param string $provider      HybridAuth provider name
+     * @param array  $roles         Roles for the token
+     */
+    public function __construct($accessToken, $provider, array $roles = array())
     {
-        $this->uid = $uid;
+        $this->accessToken = $accessToken;
+        $this->provider = $provider;
         parent::__construct($roles);
     }
 
@@ -31,7 +38,17 @@ class HybridAuthToken extends AbstractToken
      */
     public function getCredentials()
     {
-        return $this->uid;
+        return $this->accessToken;
+    }
+    
+    /**
+     * Gets the name of the provider
+     * 
+     * @return string
+     */
+    public function getProvider()
+    {
+        return $this->provider;
     }
 }
 

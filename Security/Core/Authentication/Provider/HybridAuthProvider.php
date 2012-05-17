@@ -44,6 +44,12 @@ class HybridAuthProvider implements AuthenticationProviderInterface
      */
     public function authenticate(TokenInterface $token)
     {
+        $adapter = $this->providerMap->getProviderAdapterByName($token->getProvider());
+        
+        echo '<pre>'."auth:\n";
+        print_r($adapter->getUserProfile());
+        $at = $adapter->getAccessToken();
+        echo $at['access_token']."\n".$token->getCredentials()."\n";
         die('authenticate');
         // TODO: auth...
     }
