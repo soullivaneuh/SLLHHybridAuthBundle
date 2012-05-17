@@ -34,7 +34,7 @@ class HybridAuthEntryPoint implements AuthenticationEntryPointInterface
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        
+        die('truc');
     }
 }
 

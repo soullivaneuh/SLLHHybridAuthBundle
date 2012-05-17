@@ -98,18 +98,18 @@ class HybridAuthFactory extends AbstractFactory
     /**
      * {@inheritDoc}
      */
-//    protected function createEntryPoint($container, $id, $config, $defaultEntryPoint)
-//    {
-//        $entryPointId = 'sllh_hybridauth.authentication.entry_point.hybridauth.'.$id;
-//
-//        $entryPointDefinition = $container
-//            ->setDefinition($entryPointId, new DefinitionDecorator('sllh_hybridauth.authentication.entry_point.hybridauth'))
-//            ->addArgument(new Reference('security.http_utils'))
+    protected function createEntryPoint($container, $id, $config, $defaultEntryPoint)
+    {
+        $entryPointId = 'security.authentication.entry_point.hybridauth.'.$id;
+
+        $entryPointDefinition = $container
+            ->setDefinition($entryPointId, new DefinitionDecorator('security.authentication.entry_point.hybridauth'))
+            ->addArgument(new Reference('security.http_utils'))
 //            ->addArgument($config['login_path'])
-//        ;
-//
-//        return $entryPointId;
-//    }
+        ;
+
+        return $entryPointId;
+    }
     
     /**
      * {@inheritDoc}
