@@ -44,6 +44,7 @@ class HybridAuthProvider implements AuthenticationProviderInterface
      */
     public function authenticate(TokenInterface $token)
     {
+        die('authenticate');
         // TODO: auth...
     }
     
