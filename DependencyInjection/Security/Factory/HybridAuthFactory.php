@@ -32,7 +32,7 @@ class HybridAuthFactory extends AbstractFactory
         $container->setParameter('sllh_hybridauth.provider_map.configured.'.$id, $providers);
 
         $providerMapDefinition = $container
-            ->register($this->getHybridAuthProviderMapReference($id), '%sllh_hybridauth.provider_map.class%')
+            ->register($this->getHybridAuthProviderMapReference(), '%sllh_hybridauth.provider_map.class%')
             ->addArgument(new Reference('service_container'))
             ->addArgument(new Reference('security.http_utils'))
             ->addArgument(new Parameter('sllh_hybridauth.provider_map.configured.'.$id))
@@ -41,12 +41,10 @@ class HybridAuthFactory extends AbstractFactory
     
     /**
      * Get a reference to the HybridAuth provider map
-     * 
-     * @param string $id 
      */
-    protected function getHybridAuthProviderMapReference($id)
+    protected function getHybridAuthProviderMapReference()
     {
-        return new Reference('sllh_hybridauth.provider_map.'.$id);
+        return new Reference('sllh_hybridauth.provider_map');
     }
     
     /**
@@ -62,9 +60,8 @@ class HybridAuthFactory extends AbstractFactory
         $container
             ->setDefinition($providerId, new DefinitionDecorator('security.authentication.provider.hybridauth'))
             ->addArgument($this->createHybridAuthAwareUserProvider($container, $id, $config['hybridauth_user_provider']))
-            ->addArgument($this->getHybridAuthProviderMapReference($id))
+            ->addArgument($this->getHybridAuthProviderMapReference())
         ;
-            // TODO: add provider map ?
         return $providerId;
     }
 
@@ -124,7 +121,7 @@ class HybridAuthFactory extends AbstractFactory
         }
 
         $container->getDefinition($listenerId)
-            ->addMethodCall('setProviderMap', array($this->getHybridAuthProviderMapReference($id)))
+            ->addMethodCall('setProviderMap', array($this->getHybridAuthProviderMapReference()))
             ->addMethodCall('setCheckPaths', array($checkPaths));
 
         return $listenerId;
