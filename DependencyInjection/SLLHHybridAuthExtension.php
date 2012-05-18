@@ -43,7 +43,15 @@ class SLLHHybridAuthExtension extends Extension
 //        foreach ($config['hybridauth_config'] as $name => $p) {
 //            $providers_names[] = $name;
 //        }
-//        $container->setParameter('sllh_hybridauth.providers', $providers_names);
+//        $container->setParameter('sllh_hybridauth.providers', $providers_names
+        
+        $container->setParameter('sllh_hybridauth.connect', isset($config['connect']));
+        if (isset($config['connect'])) {
+            // Links the specified service for connect
+            foreach ($config['connect'] as $key => $serviceId) {
+                $container->setAlias('sllh_hybridauth.'.str_replace('_', '.', $key), $serviceId);
+            }
+        }
     }
     
     /**
