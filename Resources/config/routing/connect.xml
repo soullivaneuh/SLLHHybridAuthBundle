@@ -7,9 +7,5 @@
     <route id="hybridauth_connect" pattern="/">
         <default key="_controller">SLLHHybridAuthBundle:Connect:connect</default>
     </route>
-    
-    <route id="hybridauth_connect_register" pattern="/register">
-        <default key="_controller">SLLHHybridAuthBundle:Connect:register</default>
-    </route>
 
 </routes>

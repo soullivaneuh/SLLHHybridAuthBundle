@@ -33,14 +33,18 @@ class ConnectController extends ContainerAware
     {
         $connect = $this->container->getParameter('sllh_hybridauth.connect');
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
+        $session = $request->getSession();
         
         $error = $this->getErrorForRequest($request);
         
         // Follow to register form with social network informations
         if ($connect && !$hasUser && $error instanceof AccountNotLinkedException) {
+            $key = uniqid($error->getProviderName().'-');
+            $session->set('hybrid_auth.connection_error', $error);
             return new RedirectResponse($this->container->get('router')->generate('hybridauth_connect_register'));
         }
-        
+
+        // TODO: Render a twig template with list of provider
         die('Connect:connect');
     }
     
@@ -56,7 +60,22 @@ class ConnectController extends ContainerAware
     {
         $connect = $this->container->getParameter('sllh_hybridauth.connect');
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
-
+        $session = $request->getSession();
+        
+        // Get and remove error from session
+        $error = $session->get('hybrid_auth.connection_error');
+        $session->remove('hybrid_auth.connection_error'); // TODO: remove after process form succeded ?
+        
+        // Check if connect option is enabled
+        if (!$connect) {
+            throw new \Exception("Connect option MUST be activated");
+        }
+        // Redirect to homepage if there are nothing to do there :)
+        if ($hasUser || !$error instanceof AccountNotLinkedException) {
+            return new RedirectResponse($this->container->get('router')->generate('homepage'));
+        }
+        
+        echo get_class($error).'<br/>';
         die('todo!!!');
     }
     
