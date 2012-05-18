@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerAware,
  *
  * @author Sullivan SENECHAL <soullivaneuh@gmail.com>
  */
-class AuthController extends ContainerAware
+class ConnectController extends ContainerAware
 {
     //put your code here
 }
