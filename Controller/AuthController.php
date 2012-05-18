@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerAware,
  *
  * @author Sullivan SENECHAL <soullivaneuh@gmail.com>
  */
-class HybridAuthController extends ContainerAware
+class AuthController extends ContainerAware
 {
     //put your code here
 }
