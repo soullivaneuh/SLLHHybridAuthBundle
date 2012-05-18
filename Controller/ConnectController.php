@@ -8,7 +8,8 @@ use Symfony\Component\DependencyInjection\ContainerAware,
     Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken,
     Symfony\Component\Security\Core\Exception\AuthenticationException,
     Symfony\Component\Security\Core\SecurityContext,
-    Symfony\Component\Security\Core\User\UserInterface;
+    Symfony\Component\Security\Core\User\UserInterface,
+    Symfony\Component\Locale\Exception;
 
 use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 
@@ -77,6 +78,17 @@ class ConnectController extends ContainerAware
         
         echo get_class($error).'<br/>';
         die('todo!!!');
+    }
+    
+    /**
+     * Link a social network account to a 
+     * 
+     * @param Request $request 
+     * @param string $name          Name of the social network
+     */
+    public function linkAction(Request $request, $name)
+    {
+        throw new NotImplementedException("linkAction not implemented");
     }
     
     /**
