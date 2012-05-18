@@ -93,11 +93,9 @@ class ConnectController extends ContainerAware
             // TODO: create and athenticate user, mail-confirmation FOS ?
         }
         
-        echo '<pre>';
-        print_r($response->getUserProfile());
-        
-        echo get_class($error).'<br/>';
-        die('todo!!!');
+        return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:register.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
     
     /**

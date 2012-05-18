@@ -1,0 +1,15 @@
+{% extends 'SLLHHybridAuthBundle::layout.html.twig' %}
+
+{% block sllh_hybridauth_content %}
+    <h3>Register with HybridAuth</h3>
+    <div>
+        <form action="{{ path('sllh_hybridauth_connect_register') }}" {{ form_enctype(form) }} method="POST">
+            {{ form_widget(form) }}
+            <div>
+                <button type="submit">OK</button>
+                <a href="{{ path('sllh_hybridauth_connect') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+{% endblock sllh_hybridauth_content %}
