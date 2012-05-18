@@ -9,9 +9,10 @@ use Symfony\Component\DependencyInjection\ContainerAware,
     Symfony\Component\Security\Core\Exception\AuthenticationException,
     Symfony\Component\Security\Core\SecurityContext,
     Symfony\Component\Security\Core\User\UserInterface,
-    Symfony\Component\Locale\Exception;
+    Symfony\Component\Locale\Exception\NotImplementedException;
 
-use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotLinkedException;
+use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotLinkedException,
+    SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse;
 
 /**
  * HybridAuthController
@@ -65,7 +66,7 @@ class ConnectController extends ContainerAware
         
         // Get and remove error from session
         $error = $session->get('hybrid_auth.connection_error');
-        $session->remove('hybrid_auth.connection_error'); // TODO: remove after process form succeded ?
+        
         
         // Check if connect option is enabled
         if (!$connect) {
@@ -75,6 +76,25 @@ class ConnectController extends ContainerAware
         if ($hasUser || !$error instanceof AccountNotLinkedException) {
             return new RedirectResponse($this->container->get('router')->generate('homepage'));
         }
+        
+        // Get social account informations
+        $adapter = $this->container->get('sllh_hybridauth.provider_map')->getProviderAdapterByName($error->getProviderName());
+        $response = new HybridAuthResponse($adapter); // TODO: check return value
+        
+        // Get form and form handler form config.yml
+        $form = $this->container->get('sllh_hybridauth.registration.form');
+        $formHandler = $this->container->get('sllh_hybridauth.registration.form.handler'); // TODO: check if the class implements good interface
+        $processed = $formHandler->process($request, $form, $response); // TODO: make an interface to implement
+        if ($processed) {
+            // Removing session cause of succed
+            $session->remove('hybrid_auth.connection_error');
+            
+            throw new NotImplementedException("Authenticate use not implemented");
+            // TODO: create and athenticate user, mail-confirmation FOS ?
+        }
+        
+        echo '<pre>';
+        print_r($response->getUserProfile());
         
         echo get_class($error).'<br/>';
         die('todo!!!');
@@ -88,6 +108,7 @@ class ConnectController extends ContainerAware
      */
     public function linkAction(Request $request, $name)
     {
+        // TODO: check if the class connector implements good interface
         throw new NotImplementedException("linkAction not implemented");
     }
     
