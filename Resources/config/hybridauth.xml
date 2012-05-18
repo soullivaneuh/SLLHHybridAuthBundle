@@ -13,9 +13,6 @@
 
     <services>
         <!-- Most of these services are modified by HybridAuthFactory or SLLHHybridAuthExtension -->
-<!--        <service id="sllh_hybridauth.authentication.listener.hybridauth" class="%sllh_hybridauth.authentication.listener.hybridauth.class%" parent="security.authentication.listener.abstract" />-->
-<!--        <service id="sllh_hybridauth.authentication.provider.hybridauth" class="%sllh_hybridauth.authentication.provider.hybridauth.class%" />-->
-<!--        <service id="sllh_hybridauth.authentication.entry_point.hybridauth" class="%sllh_hybridauth.authentication.entry_point.hybridauth.class%" />-->
         <service id="security.authentication.entry_point.hybridauth" class="%sllh_hybridauth.authentication.entry_point.hybridauth.class%" />
         <service id="security.authentication.listener.hybridauth" class="%sllh_hybridauth.authentication.listener.hybridauth.class%" parent="security.authentication.listener.abstract" />
         <service id="security.authentication.provider.hybridauth" class="%sllh_hybridauth.authentication.provider.hybridauth.class%" />
