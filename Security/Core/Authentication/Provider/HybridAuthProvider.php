@@ -53,6 +53,7 @@ class HybridAuthProvider implements AuthenticationProviderInterface
         
         // Getting the user by the selected provider
         try {
+            // TODO: check if userProvider implements good classes
             $user = $this->userProvider->loadUserByHybridAuthResponse($response);
         }
         catch (HybridAuthExceptionInterface $e) { // Follow information to ConnectController
