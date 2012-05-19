@@ -50,7 +50,7 @@ class HybridAuthProvider implements AuthenticationProviderInterface
     {
         $adapter = $this->providerMap->getProviderAdapterByName($token->getProvider());
         
-       // Making a HybridAuthResponse
+        // Making a HybridAuthResponse
         $responseNamespace = 'SLLH\HybridAuthBundle\HybridAuth\Response\\';
         $responseClass = $responseNamespace.$adapter->id.'AuthResponse';
         if (class_exists($responseClass)) {
