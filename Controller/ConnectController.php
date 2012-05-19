@@ -95,7 +95,9 @@ class ConnectController extends ContainerAware
         
         // TODO: Make multiple template engines compatibility (see: FOSUserBundle/Controllers)
         return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:register.html.twig', array(
-            'form' => $form->createView()
+            'form'          => $form->createView(),
+            'provider'      => $adapter->id,
+            'user_profile'  => $response->getUserProfile()
         ));
     }
     
