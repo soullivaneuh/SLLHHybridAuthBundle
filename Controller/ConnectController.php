@@ -89,6 +89,10 @@ class ConnectController extends ContainerAware
             // Removing session cause of succed
             $session->remove('hybrid_auth.connection_error');
             
+            // Now we link the account to the created user
+            // TODO: check if connect_provider implement good classes
+            $this->container->get('sllh_hybridauth.connect.provider')->connect($form->getData(), $response);
+            
             throw new NotImplementedException("Authenticate use not implemented");
             // TODO: create and athenticate user, mail-confirmation FOS ?
         }
