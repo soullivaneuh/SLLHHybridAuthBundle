@@ -9,8 +9,10 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken,
     SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
     SLLH\HybridAuthBundle\Security\Core\User\HybridAuthAwareUserProviderInterface,
-    SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse,
     SLLH\HybridAuthBundle\Security\Core\Exception\HybridAuthExceptionInterface;
+
+use SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse,
+    SLLH\HybridAuthBundle\HybridAuth\Response\TwitterAuthResponse;
 
 /**
  * Description of HybridAuthProvider
@@ -47,9 +49,16 @@ class HybridAuthProvider implements AuthenticationProviderInterface
     public function authenticate(TokenInterface $token)
     {
         $adapter = $this->providerMap->getProviderAdapterByName($token->getProvider());
-                
-        // Making a HybridAuthResponse
-        $response = new HybridAuthResponse($adapter);
+        
+       // Making a HybridAuthResponse
+        $responseNamespace = 'SLLH\HybridAuthBundle\HybridAuth\Response\\';
+        $responseClass = $responseNamespace.$adapter->id.'AuthResponse';
+        if (class_exists($responseClass)) {
+            $response = new $responseClass($adapter);
+        }
+        else {
+            $response = new HybridAuthResponse($adapter);            
+        }
         
         // Getting the user by the selected provider
         try {
