@@ -75,6 +75,8 @@ class HybridAuthProvider implements AuthenticationProviderInterface
         $token = new HybridAuthToken($token->getCredentials(), $token->getProvider(), $user->getRoles());
         $token->setUser($user);
         $token->setAuthenticated(true);
+        
+        return $token;
     }
     
     /**
