@@ -79,7 +79,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getBirthDay()
+    public function getBirthday()
     {
         $day = $this->getUserProfile()->birthDay;
         $month = $this->getUserProfile()->birthMonth;

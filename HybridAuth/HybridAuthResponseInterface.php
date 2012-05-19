@@ -52,7 +52,7 @@ interface HybridAuthResponseInterface
      * 
      * @return null|DateTime
      */
-    public function getBirthDay();
+    public function getBirthday();
     
     /**
      * Gets user social network profile
