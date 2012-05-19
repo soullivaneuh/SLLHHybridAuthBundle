@@ -93,8 +93,9 @@ class ConnectController extends ContainerAware
             // TODO: check if connect_provider implement good classes
             $this->container->get('sllh_hybridauth.connect.provider')->connect($form->getData(), $response);
             
-            throw new NotImplementedException("Authenticate use not implemented");
-            // TODO: create and athenticate user, mail-confirmation FOS ?
+            // TODO: athenticate user ? mail-confirmation FOS ?
+            // TODO: add param for register_success path ? twig_template ?
+            return new RedirectResponse($this->container->get('router')->generate('homepage'));
         }
         
         // TODO: Make multiple template engines compatibility (see: FOSUserBundle/Controllers)
