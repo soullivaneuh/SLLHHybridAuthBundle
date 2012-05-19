@@ -114,11 +114,56 @@ class ConnectController extends ContainerAware
      * 
      * @param Request $request 
      * @param string $name          Name of the social network
+     * 
+     * @return Response
      */
     public function linkAction(Request $request, $name)
     {
-        // TODO: check if the class connector implements good interface
-        throw new NotImplementedException("linkAction not implemented");
+        $connect = $this->container->getParameter('sllh_hybridauth.connect');
+        $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
+        $session = $request->getSession();
+        
+        // Redirect to homepage if connect option is not set or if there is no authenticated user
+        if (!$connect && !$hasUser) {
+            return new RedirectResponse($this->container->get('router')->generate('homepage'));
+        }
+        
+        // Get social account informations
+        $adapter = $this->container->get('sllh_hybridauth.provider_map')->getProviderAdapterByName($name);
+        $response = new HybridAuthResponse($adapter); // TODO: check return value
+        
+        // Get identifier from cofirmation
+        $uid = $session->get('hybrid_auth.link_confirm');
+        $session->remove('hybrid_auth.link_confirm');
+        
+        $form = $this->container->get('form.factory')->createBuilder('form')->getForm();
+        
+        // Check if the social identifier is the same after confirmation
+        if ($request->getMethod() === 'POST' && $uid === $response->getIdentifier()) {
+            $form->bindRequest($request);
+
+            if ($form->isValid()) {
+                $user = $this->container->get('security.context')->getToken()->getUser();
+                
+                // Links the user to the new social network
+                // TODO: check if the class connector implements good interface
+                $this->container->get('sllh_hybridauth.connect.provider')->connect($user, $response);
+                
+                return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:link_success.html.twig', array(
+                    'provider'      => $adapter->id,
+                    'user_profile'  => $response->getUserProfile()
+                ));
+            }
+        }
+        
+        // Set identifier for confirmation
+        $session->set('hybrid_auth.link_confirm', $response->getIdentifier());
+        
+        return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:link_confirmation.html.twig', array(
+            'form'          => $form->createView(),
+            'provider'      => $adapter->id,
+            'user_profile'  => $response->getUserProfile()
+        ));
     }
     
     /**
