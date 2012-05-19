@@ -46,6 +46,9 @@ class ConnectController extends ContainerAware
             return new RedirectResponse($this->container->get('router')->generate('hybridauth_connect_register'));
         }
 
+        // TODO: make a success_path in security.yml or config.yml
+        return new RedirectResponse($this->container->get('router')->generate('homepage'));
+        
         // TODO: Render a twig template with list of provider
         die('Connect:connect');
     }
