@@ -93,6 +93,7 @@ class ConnectController extends ContainerAware
             // TODO: create and athenticate user, mail-confirmation FOS ?
         }
         
+        // TODO: Make multiple template engines compatibility (see: FOSUserBundle/Controllers)
         return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:register.html.twig', array(
             'form' => $form->createView()
         ));
