@@ -39,7 +39,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getIdentifier()
+    public final function getIdentifier()
     {
         return $this->getUserProfile()->identifier;
     }
@@ -93,7 +93,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getUserProfile()
+    public final function getUserProfile()
     {
         return $this->userProfile;
     }
@@ -101,7 +101,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getUserContactsList()
+    public final function getUserContactsList()
     {
         // TODO: try...catch...return null
         return $this->adapter->getUserContactsList();
@@ -110,7 +110,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getUserActivity()
+    public final function getUserActivity()
     {
         // TODO: try...catch...return null
         return $this->adapter->getUserActivity();
@@ -119,7 +119,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getProviderName()
+    public final function getProviderName()
     {
         $this->adapter->id;
     }
@@ -127,7 +127,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getProviderAdapter()
+    public final function getProviderAdapter()
     {
         return $this->adapter;
     }
