@@ -76,6 +76,13 @@ interface HybridAuthResponseInterface
     public function getUserActivity();
     
     /**
+     * Gets provider's name
+     * 
+     * @return string
+     */
+    public function getProviderName();
+    
+    /**
      * Gets the Hybrid_Provider_Adapter of the authenticated user
      * 
      * @return Hybrid_Provider_Adapter 

@@ -119,6 +119,14 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     /**
      * {@inheritDoc}
      */
+    public function getProviderName()
+    {
+        $this->adapter->id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getProviderAdapter()
     {
         return $this->adapter;
