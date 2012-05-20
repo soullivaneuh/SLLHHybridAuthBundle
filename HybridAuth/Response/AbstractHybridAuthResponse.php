@@ -7,6 +7,7 @@ use SLLH\HybridAuthBundle\HybridAuth\HybridAuthResponseInterface;
 use \Hybrid_Provider_Adapter;
 
 use \DateTime;
+use \Normalizer;
 
 /**
  * AbstractHybridAuthResponse
@@ -25,7 +26,9 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
      */
     protected $userProfile;
     
-    /**
+    /**        return normalizer_normalize($str);
+        
+
      * Constructor
      * 
      * @param Hybrid_Provider_Adapter $adapter 
@@ -49,7 +52,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
      */
     public function getUsername()
     {
-        return $this->getUserProfile()->displayName;
+        return $this->cleanString($this->getUserProfile()->displayName);
     }
     
     /**
@@ -130,6 +133,20 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     public final function getProviderAdapter()
     {
         return $this->adapter;
+    }
+    
+    /**
+     * Remove all specials characters
+     * 
+     * @param string $str
+     * 
+     * @return string 
+     */
+    private final function cleanString($str)
+    {
+        $search = array('@[^a-zA-Z0-9_]@');
+        $replace = array('');
+        return preg_replace($search, $replace, $str);
     }
 }
 
