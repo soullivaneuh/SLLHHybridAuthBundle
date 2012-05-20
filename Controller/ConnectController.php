@@ -97,6 +97,9 @@ class ConnectController extends ContainerAware
             // TODO: check if connect_provider implement good classes
             $this->container->get('sllh_hybridauth.connect.provider')->connect($form->getData(), $response);
             
+            // Authenticate the user
+            $this->authenticateUser($form->getData());
+
             // TODO: athenticate user ? mail-confirmation FOS ?
             // TODO: add param for register_success path ? twig_template ?
             return $this->registerActionSuccess($request, $form, $response);
@@ -201,6 +204,26 @@ class ConnectController extends ContainerAware
 
         return $error;
     }
+    
+    /**
+     * Authenticate a user with Symfony Security
+     * 
+     * @param UserInterface $user
+     */
+    protected function authenticateUser(UserInterface $user)
+    {
+        try {
+            $this->container->get('sllh_hybridauth.user_checker')->checkPostAuth($user);
+        } catch (AccountStatusException $e) {
+            // Don't authenticate locked, disabled or expired users
+            return;
+        }
+
+        $providerKey = $this->container->getParameter('sllh_hybridauth.firewall_name');
+        $token = new UsernamePasswordToken($user, null, $providerKey, $user->getRoles());
+
+        $this->container->get('security.context')->setToken($token);
+    }    
 }
 
 ?>

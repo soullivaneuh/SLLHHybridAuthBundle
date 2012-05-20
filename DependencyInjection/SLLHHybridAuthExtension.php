@@ -51,6 +51,8 @@ class SLLHHybridAuthExtension extends Extension
             foreach ($config['connect'] as $key => $serviceId) {
                 $container->setAlias('sllh_hybridauth.'.str_replace('_', '.', $key), $serviceId);
             }
+            
+            $container->setAlias('sllh_hybridauth.user_checker', 'security.user_checker');
         }
     }
     
