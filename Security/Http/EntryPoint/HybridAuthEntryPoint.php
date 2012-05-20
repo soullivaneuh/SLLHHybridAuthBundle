@@ -20,13 +20,20 @@ class HybridAuthEntryPoint implements AuthenticationEntryPointInterface
     private $httpUtils;
     
     /**
+     * @var string 
+     */
+    private $loginPath;
+    
+    /**
      * Constructor
      * 
      * @param HttpUtils             $httpUtils
+     * @param string                $loginPath
      */
-    public function __construct(HttpUtils $httpUtils)
+    public function __construct(HttpUtils $httpUtils, $loginPath)
     {
         $this->httpUtils = $httpUtils;
+        $this->loginPath = $loginPath;
     }
 
     /**
@@ -34,7 +41,7 @@ class HybridAuthEntryPoint implements AuthenticationEntryPointInterface
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        die('truc');
+        return $this->httpUtils->createRedirectResponse($request, $this->loginPath);
     }
 }
 
