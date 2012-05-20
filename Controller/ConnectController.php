@@ -9,8 +9,9 @@ use Symfony\Component\DependencyInjection\ContainerAware,
     Symfony\Component\Security\Core\Exception\AuthenticationException,
     Symfony\Component\Security\Core\SecurityContext,
     Symfony\Component\Security\Core\User\UserInterface,
-    Symfony\Component\Locale\Exception\NotImplementedException;
-
+    Symfony\Component\Locale\Exception\NotImplementedException,
+    Symfony\Component\Form\Form;
+    
 use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotLinkedException,
     SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse;
 
@@ -31,7 +32,7 @@ class ConnectController extends ContainerAware
      * 
      * @return Response
      */
-    public function connectAction(Request $request)
+    public final function connectAction(Request $request)
     {
         $connect = $this->container->getParameter('sllh_hybridauth.connect');
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
@@ -61,7 +62,7 @@ class ConnectController extends ContainerAware
      * 
      * @return Response
      */
-    public function registerAction(Request $request)
+    public final function registerAction(Request $request)
     {
         $connect = $this->container->getParameter('sllh_hybridauth.connect');
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
@@ -98,14 +99,25 @@ class ConnectController extends ContainerAware
             
             // TODO: athenticate user ? mail-confirmation FOS ?
             // TODO: add param for register_success path ? twig_template ?
-            return new RedirectResponse($this->container->get('router')->generate('homepage'));
+            return $this->registerActionSuccess($request, $form, $response);
         }
         
+        
+        return $this->registerActionSuccess($request, $form, $response, $error);
+    }
+    
+    protected function registerActionSuccess(Request $request, Form $form, HybridAuthResponse $response, AccountNotLinkedException $error = NULL)
+    {
+        // Register and connect done
+        if ($error === NULL) {
+            return new RedirectResponse($this->container->get('router')->generate('homepage'));
+        }
         // TODO: Make multiple template engines compatibility (see: FOSUserBundle/Controllers)
         return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:register.html.twig', array(
-            'form'          => $form->createView(),
-            'provider'      => $adapter->id,
-            'user_profile'  => $response->getUserProfile()
+            'error'             => $error->getMessage(),
+            'form'              => $form->createView(),
+            'provider'          => $response->getProviderName(),
+            'user_profile'      => $response->getUserProfile()
         ));
     }
     
@@ -117,7 +129,7 @@ class ConnectController extends ContainerAware
      * 
      * @return Response
      */
-    public function linkAction(Request $request, $name)
+    public final function linkAction(Request $request, $name)
     {
         $connect = $this->container->getParameter('sllh_hybridauth.connect');
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
