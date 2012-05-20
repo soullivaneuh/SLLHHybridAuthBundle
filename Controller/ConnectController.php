@@ -48,10 +48,10 @@ class ConnectController extends ContainerAware
         }
 
         // TODO: make a success_path in security.yml or config.yml
-        return new RedirectResponse($this->container->get('router')->generate('homepage'));
-        
-        // TODO: Render a twig template with list of provider
-        die('Connect:connect');
+        return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:login.html.twig', array(
+            'error'         => $error ? $error->getMessage() : '',
+            'providers'     => $this->getProviders($request, $hasUser),
+        ));
     }
     
     /**
@@ -181,6 +181,31 @@ class ConnectController extends ContainerAware
             'provider'      => $adapter->id,
             'user_profile'  => $response->getUserProfile()
         ));
+    }
+    
+    /**
+     * Gets a list of providers
+     * 
+     * @param Request $request
+     * @param boolean $hasUser
+     * 
+     * @return array
+     */
+    protected function getProviders(Request $request, $hasUser)
+    {
+        $providerMap = $this->container->getParameter('sllh_hybridauth.provider_map.configured.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
+        
+        $providers = array();
+        foreach ($providerMap as $name => $checkPath) {
+            $providers[$name] = array(
+                'url'   => $hasUser
+                    ? $this->container->get('router')->generate('hybridauth_connect_link', array('name' => $name))
+                    : $request->getUriForPath($checkPath),
+                'name'  => $name
+            );
+        }
+        
+        return $providers;
     }
     
     /**

@@ -1,6 +1,7 @@
 {% extends 'SLLHHybridAuthBundle::layout.html.twig' %}
 
 {% block sllh_hybridauth_content %}
+    <div class="error">{{ error }}</div>
     <h3>Register with {{ provider }}</h3>
     <div>
         <img src="{{ user_profile.photoURL }}" />
