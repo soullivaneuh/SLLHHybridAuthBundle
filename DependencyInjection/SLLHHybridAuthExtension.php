@@ -48,9 +48,11 @@ class SLLHHybridAuthExtension extends Extension
         $container->setParameter('sllh_hybridauth.connect', isset($config['connect']));
         if (isset($config['connect'])) {
             // Links the specified service for connect
-            foreach ($config['connect'] as $key => $serviceId) {
+            foreach ($config['connect']['services'] as $key => $serviceId) {
                 $container->setAlias('sllh_hybridauth.'.str_replace('_', '.', $key), $serviceId);
             }
+            
+            $container->setParameter('sllh_hybridauth.auth_after_register', $config['connect']['auth_after_register']);
             
             $container->setAlias('sllh_hybridauth.user_checker', 'security.user_checker');
         }

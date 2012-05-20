@@ -98,7 +98,9 @@ class ConnectController extends ContainerAware
             $this->container->get('sllh_hybridauth.connect.provider')->connect($form->getData(), $response);
             
             // Authenticate the user
-            $this->authenticateUser($form->getData());
+            if ($this->container->getParameter('sllh_hybridauth.auth_after_register') === true) {
+                $this->authenticateUser($form->getData());
+            }
 
             // TODO: athenticate user ? mail-confirmation FOS ?
             // TODO: add param for register_success path ? twig_template ?
