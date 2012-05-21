@@ -85,6 +85,10 @@ class ConnectController extends ContainerAware
         $adapter = $this->container->get('sllh_hybridauth.provider_map')->getProviderAdapterByName($error->getProviderName());
         $response = new HybridAuthResponse($adapter); // TODO: check return value
         
+//        echo '<pre>';
+//        print_r($response->getUserProfile());
+//        die();
+        
         // Get form and form handler form config.yml
         $form = $this->container->get('sllh_hybridauth.registration.form');
         $formHandler = $this->container->get('sllh_hybridauth.registration.form.handler'); // TODO: check if the class implements good interface
