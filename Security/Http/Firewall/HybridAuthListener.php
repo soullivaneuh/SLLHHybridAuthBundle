@@ -132,8 +132,22 @@ class HybridAuthListener implements ListenerInterface
     {
         $request = $event->getRequest();
 
+        // TODO: Check session to disable auto connect when logout
+        // TODO: Check if user is not already connected
+        // TODO: Add option for enabled/disabled auto_connect
+        if (!$this->securityContext->getToken()) {
+            foreach ($this->providerMap->getConnectedAdapters() as $adapterName) {
+                $adapter = $this->providerMap->getProviderAdapterByName($adapterName);
+                $token =  $this->generateToken($adapter);
+                $returnValue = $this->authenticationManager->authenticate($token);
+                if (null !== $returnValue) {
+                    $adapter->logout();
+                    return $this->onAuthenticated($event, $request, $returnValue);
+                }
+            }
+        }
+        
         if (!$this->requiresAuthentication($request)) {
-//            die('...');
             return;
         }
 
@@ -150,15 +164,7 @@ class HybridAuthListener implements ListenerInterface
                 return;
             }
 
-            if ($returnValue instanceof TokenInterface) {
-                $this->sessionStrategy->onAuthentication($request, $returnValue);
-
-                $response = $this->onSuccess($event, $request, $returnValue);
-            } elseif ($returnValue instanceof Response) {
-                $response = $returnValue;
-            } else {
-                throw new \RuntimeException('attemptAuthentication() must either return a Response, an implementation of TokenInterface, or null.');
-            }
+            $response = $this->onAuthenticated($event, $request, $returnValue);
         } catch (AuthenticationException $e) {
             $response = $this->onFailure($event, $request, $e);
         }
@@ -188,10 +194,41 @@ class HybridAuthListener implements ListenerInterface
         $adapter = $this->providerMap->getProviderAdapterByRequest($request);
         
         // Create a token with the social network authentication
-        $adapterToken = $adapter->getAccessToken();
-        $token =  new HybridAuthToken($adapterToken['access_token'], $adapter->id);
+        $token =  $this->generateToken($adapter);
         
         return $this->authenticationManager->authenticate($token);
+    }
+    
+    /**
+     * Generate a HybridAuthToken with adapter
+     * 
+     * @param Hybrid_Provider_Adapter $adapter
+     * 
+     * @return HybridAuthToken 
+     */
+    private function generateToken(Hybrid_Provider_Adapter $adapter)
+    {
+        $adapterToken = $adapter->getAccessToken();
+        return new HybridAuthToken($adapterToken['access_token'], $adapter->id);        
+    }
+    
+    /**
+     * Return correct Response with the returnValue
+     * 
+     * @param type $returnValue 
+     */
+    private function onAuthenticated(GetResponseEvent $event, Request $request, $returnValue)
+    {
+        if ($returnValue instanceof TokenInterface) {
+            $this->sessionStrategy->onAuthentication($request, $returnValue);
+
+            $response = $this->onSuccess($event, $request, $returnValue);
+        } elseif ($returnValue instanceof Response) {
+            $response = $returnValue;
+        } else {
+            throw new \RuntimeException('attemptAuthentication() must either return a Response, an implementation of TokenInterface, or null.');
+        }
+        return $response;
     }
     
     private function onFailure(GetResponseEvent $event, Request $request, AuthenticationException $failed)

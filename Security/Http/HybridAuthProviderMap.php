@@ -85,6 +85,16 @@ class HybridAuthProviderMap
         }
         return null;
     }
+    
+    /**
+     * Gets all connected adapter
+     * 
+     * @return array 
+     */
+    public function getConnectedAdapters()
+    {
+        return $this->getHybridAuth()->getConnectedProviders();
+    }
         
     /**
      * Gets the Hybrid_Auth api

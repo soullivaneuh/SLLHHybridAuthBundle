@@ -50,7 +50,7 @@ class ConnectController extends ContainerAware
         // TODO: make a success_path in security.yml or config.yml
         return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:login.html.twig', array(
             'error'         => $error ? $error->getMessage() : '',
-            'providers'     => $this->getProviders($request, $hasUser),
+            'providers'     => $this->getProvidersForConnect($request, $hasUser),
         ));
     }
     
@@ -188,24 +188,77 @@ class ConnectController extends ContainerAware
     }
     
     /**
-     * Gets a list of providers
+     * Generate a template with js sdks for providers
+     * Auth a provider to hybridauth when the name is given
+     * 
+     * @param Request $request 
+     * @param string $name          Name of the social network
+     * 
+     * @return Response
+     */
+    public function authAction(Request $request, $name = null)
+    {
+        // If name provided in ajax request, connect to hybrid_auth and return response
+        if ($name !== null && $request->isXmlHttpRequest()) {
+            // TODO: Check if not already connected
+            // TODO: Auth to Hybrid_auth
+            $response = new Response(json_encode(array('name' => $name)));
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        }
+
+        // Generate js sdk to check if user connected with your social application
+        return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:auth.html.twig', array(
+            'providers' => $this->getProvidersForAuth($request)
+        ));
+    }
+
+
+    /**
+     * Gets a list of providers for connectAction
      * 
      * @param Request $request
      * @param boolean $hasUser
      * 
      * @return array
      */
-    protected function getProviders(Request $request, $hasUser)
+    protected function getProvidersForConect(Request $request, $hasUser)
     {
         $providerMap = $this->container->getParameter('sllh_hybridauth.provider_map.configured.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
+        $configs = $this->container->getParameter('sllh_hybridauth.config');
         
         $providers = array();
         foreach ($providerMap as $name => $checkPath) {
             $providers[$name] = array(
-                'url'   => $hasUser
+                'url'       => $hasUser
                     ? $this->container->get('router')->generate('hybridauth_connect_link', array('name' => $name))
                     : $request->getUriForPath($checkPath),
-                'name'  => $name
+                'name'      => $name,
+                'config'    => $configs['providers'][$name]
+            );
+        }
+        
+        return $providers;
+    }
+    
+    /**
+     * Gets a list of providers for authAction
+     * 
+     * @param Request $request
+     * @param boolean $hasUser
+     * 
+     * @return array
+     */
+    protected function getProvidersForAuth(Request $request)
+    {
+        $configs = $this->container->getParameter('sllh_hybridauth.config');
+        
+        $providers = array();
+        foreach ($configs['providers'] as $name => $config) {
+            $providers[$name] = array(
+                'url'       => $this->container->get('router')->generate('hybridauth_connect_link', array('name' => $name)),
+                'name'      => $name,
+                'config'    => $config
             );
         }
         

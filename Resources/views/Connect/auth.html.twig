@@ -1,0 +1,5 @@
+{% block sllh_hybridauth_content %}
+    {% for provider in providers %}
+        {% include 'SLLHHybridAuthBundle:Connect:auth_list/auth_' ~ provider.name | lower ~ '.html.twig' ignore missing with {'url': provider.url, 'config': provider.config} %}
+    {% endfor %}
+{% endblock sllh_hybridauth_content %}
