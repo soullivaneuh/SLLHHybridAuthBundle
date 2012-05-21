@@ -132,50 +132,20 @@ class HybridAuthListener implements ListenerInterface
     {
         $request = $event->getRequest();
 
-        // TODO: Check session to disable auto connect when logout
-        // TODO: Check if user is not already connected
-        // TODO: Add option for enabled/disabled auto_connect
-        if (!$this->securityContext->getToken()) {
-            foreach ($this->providerMap->getConnectedAdapters() as $adapterName) {
-                $adapter = $this->providerMap->getProviderAdapterByName($adapterName);
-                $token =  $this->generateToken($adapter);
-                $returnValue = $this->authenticationManager->authenticate($token);
-                if (null !== $returnValue) {
-                    $adapter->logout();
-                    return $this->onAuthenticated($event, $request, $returnValue);
-                }
-            }
+        if ($this->requiresAuthentication($request)) {
+            $response = $this->tryAuthentication($event, $request);
+        }
+        else if (null === $response = $this->tryAutoConnect($event, $request)) {
+            return ;
         }
         
-        if (!$this->requiresAuthentication($request)) {
-            return;
-        }
-
-        if (!$request->hasSession()) {
-            throw new \RuntimeException('This authentication method requires a session.');
-        }
-
-        try {
-            if (!$request->hasPreviousSession()) {
-                throw new SessionUnavailableException('Your session has timed-out, or you have disabled cookies.');
-            }
-
-            if (null === $returnValue = $this->attemptAuthentication($request)) {
-                return;
-            }
-
-            $response = $this->onAuthenticated($event, $request, $returnValue);
-        } catch (AuthenticationException $e) {
-            $response = $this->onFailure($event, $request, $e);
-        }
-
         $event->setResponse($response);
     }
     
     /**
      * {@inheritDoc}
      */
-    public function requiresAuthentication(Request $request)
+    protected function requiresAuthentication(Request $request)
     {
         foreach ($this->checkPaths as $checkPath) {
             if ($this->httpUtils->checkRequestPath($request, $checkPath)) {
@@ -197,6 +167,63 @@ class HybridAuthListener implements ListenerInterface
         $token =  $this->generateToken($adapter);
         
         return $this->authenticationManager->authenticate($token);
+    }
+    
+    /**
+     * Try to auto connect with hybrid_auth sessions
+     * 
+     * @param GetResponseEvent $event
+     * @param Request $request
+     * 
+     * @return null|Response
+     */
+    private function tryAutoConnect(GetResponseEvent $event, Request $request)
+    {
+        if (!$this->securityContext->getToken()) {
+            foreach ($this->providerMap->getConnectedAdapters() as $adapterName) {
+                $adapter = $this->providerMap->getProviderAdapterByName($adapterName);
+                $token =  $this->generateToken($adapter);
+                $returnValue = $this->authenticationManager->authenticate($token);
+                if (null !== $returnValue) {
+                    return $this->onAuthenticated($event, $request, $returnValue);
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Try to be authenticate with a specific provider
+     * 
+     * @param GetResponseEvent $event
+     * @param Request $request
+     * 
+     * @return Response
+     * 
+     * @throws RuntimeException
+     * @throws SessionUnavailableException 
+     */
+    private function tryAuthentication(GetResponseEvent $event, Request $request)
+    {
+        if (!$request->hasSession()) {
+            throw new \RuntimeException('This authentication method requires a session.');
+        }
+
+        try {
+            if (!$request->hasPreviousSession()) {
+                throw new SessionUnavailableException('Your session has timed-out, or you have disabled cookies.');
+            }
+
+            if (null === $returnValue = $this->attemptAuthentication($request)) {
+                $this->logger->err('attemptAuthentication failed');
+                return;
+            }
+
+            $response = $this->onAuthenticated($event, $request, $returnValue);
+        } catch (AuthenticationException $e) {
+            $response = $this->onFailure($event, $request, $e);
+        }
+        return $response;
     }
     
     /**

@@ -17,6 +17,21 @@ use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractF
 class HybridAuthFactory extends AbstractFactory
 {
     /**
+     * @{inheritDoc}
+     */
+    public function create(ContainerBuilder $container, $id, $config, $userProviderId, $defaultEntryPointId)
+    {
+        $container->register($this->getHybridAuthLogoutHandlerReference(), '%sllh_hybridauth.http.logout.handler.hybridauth.class%')
+                ->addArgument(new Reference('sllh_hybridauth.provider_map'))
+        ;
+        
+        $container->getDefinition('security.logout_listener')
+                ->addMethodCall('addHandler', array($this->getHybridAuthLogoutHandlerReference()))
+        ;
+        return parent::create($container, $id, $config, $userProviderId, $defaultEntryPointId);
+    }
+    
+    /**
      * Creates a resource owner map for the given configuration.
      *
      * @param ContainerBuilder $container Container to build for
@@ -37,6 +52,14 @@ class HybridAuthFactory extends AbstractFactory
             ->addArgument(new Reference('security.http_utils'))
             ->addArgument(new Parameter('sllh_hybridauth.provider_map.configured.'.$id))
         ;
+    }
+    
+    /**
+     * Get a reference to the logout listener 
+     */
+    protected function getHybridAuthLogoutHandlerReference()
+    {
+        return new Reference('security.http.logout.handler.hybridauth');
     }
     
     /**

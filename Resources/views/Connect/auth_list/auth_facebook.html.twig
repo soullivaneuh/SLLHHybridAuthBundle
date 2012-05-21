@@ -15,6 +15,10 @@ window.fbAsyncInit = function() {
             FB.api('/me', function(me){
                 // TODO: call auth action
                 console.debug('Facebook id: '+me.id);
+                location.href = '{{ url }}';
+//                $.post('{{ url }}', { uid: me.id }, function (data) {
+//                    console.debug(data);
+//                }, 'text');
             })
         }
     });

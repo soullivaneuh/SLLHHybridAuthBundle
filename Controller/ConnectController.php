@@ -5,6 +5,7 @@ namespace SLLH\HybridAuthBundle\Controller;
 use Symfony\Component\DependencyInjection\ContainerAware,
     Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpFoundation\RedirectResponse,
+    Symfony\Component\HttpFoundation\Response,
     Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken,
     Symfony\Component\Security\Core\Exception\AuthenticationException,
     Symfony\Component\Security\Core\SecurityContext,
@@ -198,18 +199,15 @@ class ConnectController extends ContainerAware
      */
     public function authAction(Request $request, $name = null)
     {
-        // If name provided in ajax request, connect to hybrid_auth and return response
-        if ($name !== null && $request->isXmlHttpRequest()) {
-            // TODO: Check if not already connected
-            // TODO: Auth to Hybrid_auth
-            $response = new Response(json_encode(array('name' => $name)));
-            $response->headers->set('Content-Type', 'application/json');
-            return $response;
+        if ($request->cookies->get('sllh_hybridauth_logout')) {
+            return new Response();
         }
+
+        // TODO: Add option for enabled/disabled auto_connect (TWIG ?)
 
         // Generate js sdk to check if user connected with your social application
         return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:auth.html.twig', array(
-            'providers' => $this->getProvidersForAuth($request)
+            'providers' => $this->getProvidersForConnect($request, false)
         ));
     }
 
@@ -256,7 +254,7 @@ class ConnectController extends ContainerAware
         $providers = array();
         foreach ($configs['providers'] as $name => $config) {
             $providers[$name] = array(
-                'url'       => $this->container->get('router')->generate('hybridauth_connect_link', array('name' => $name)),
+                'url'       => $this->container->get('router')->generate('hybridauth_connect_auth', array('name' => $name)),
                 'name'      => $name,
                 'config'    => $config
             );

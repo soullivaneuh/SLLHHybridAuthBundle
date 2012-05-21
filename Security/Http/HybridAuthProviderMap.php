@@ -54,10 +54,11 @@ class HybridAuthProviderMap
      * Gets the appropriate ProviderAdapter given the name.
      * 
      * @param string $name 
+     * @param boolean $connected    If true, just try to get connected provider
      * 
      * @return null|Hybrid_Provider_Adapter
      */
-    public function getProviderAdapterByName($name)
+    public function getProviderAdapterByName($name, $connected = false)
     {
         $hybridauth_config = $this->container->getParameter('sllh_hybridauth.config');
         if (!array_key_exists($name, $hybridauth_config['providers'])) {
@@ -66,6 +67,12 @@ class HybridAuthProviderMap
         
         // TODO: Catch error and return null: Authentification failed! Facebook returned an invalide user id.
         // TODO: add additional params ($this->config['providers'][$name]['auth_params'])
+        if ($connected == true) {
+            return $this->getHybridAuth()->isConnectedWith($name)
+                    ? $this->getHybridAuth()->getAdapter($name)
+                    : null
+            ;
+        }
         return $this->getHybridAuth()->authenticate($name);
     }
     
