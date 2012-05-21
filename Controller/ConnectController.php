@@ -222,7 +222,7 @@ class ConnectController extends ContainerAware
      * 
      * @return array
      */
-    protected function getProvidersForConect(Request $request, $hasUser)
+    protected function getProvidersForConnect(Request $request, $hasUser)
     {
         $providerMap = $this->container->getParameter('sllh_hybridauth.provider_map.configured.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
         $configs = $this->container->getParameter('sllh_hybridauth.config');
