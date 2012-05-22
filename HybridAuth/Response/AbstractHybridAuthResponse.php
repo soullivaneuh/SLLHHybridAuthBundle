@@ -26,9 +26,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
      */
     protected $userProfile;
     
-    /**        return normalizer_normalize($str);
-        
-
+    /**
      * Constructor
      * 
      * @param Hybrid_Provider_Adapter $adapter 
