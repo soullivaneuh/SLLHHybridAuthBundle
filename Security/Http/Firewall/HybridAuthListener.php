@@ -16,7 +16,8 @@ use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener,
     Symfony\Component\HttpFoundation\Response,
     Symfony\Component\Security\Http\Event\InteractiveLoginEvent,
     Symfony\Component\Security\Http\SecurityEvents,
-    Symfony\Component\Security\Core\Exception\AuthenticationException;
+    Symfony\Component\Security\Core\Exception\AuthenticationException,
+    Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 
 use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
     SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken;
