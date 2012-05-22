@@ -4,7 +4,8 @@ namespace SLLH\HybridAuthBundle\Security\Core\Authentication\Provider;
 
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface,
     Symfony\Component\Security\Core\Authentication\Token\TokenInterface,
-    Symfony\Component\Security\Core\User\UserProviderInterface;
+    Symfony\Component\Security\Core\User\UserProviderInterface,
+    Symfony\Component\Security\Core\User\UserCheckerInterface;
 
 use SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken,
     SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
@@ -30,6 +31,11 @@ class HybridAuthProvider implements AuthenticationProviderInterface
      * @var HybridAuthProviderMap
      */
     private $providerMap;
+    
+    /**
+     * @var UserCheckerInterface
+     */
+    private $userChecker;
 
     /**
      * Constructor
@@ -37,10 +43,11 @@ class HybridAuthProvider implements AuthenticationProviderInterface
      * @param HybridAuthAwareUserProviderInterface $userProvider
      * @param HybridAuthProviderMap $providerMap 
      */
-    public function __construct(HybridAuthAwareUserProviderInterface $userProvider, HybridAuthProviderMap $providerMap)
+    public function __construct(HybridAuthAwareUserProviderInterface $userProvider, HybridAuthProviderMap $providerMap, UserCheckerInterface $userChecker)
     {
         $this->userProvider = $userProvider;
         $this->providerMap = $providerMap;
+        $this->userChecker = $userChecker;
     }
     
     /**
@@ -64,6 +71,9 @@ class HybridAuthProvider implements AuthenticationProviderInterface
         try {
             // TODO: check if userProvider implements good classes
             $user = $this->userProvider->loadUserByHybridAuthResponse($response);
+            
+            // Advanced account status check
+            $this->userChecker->checkPostAuth($user);
         }
         catch (HybridAuthExceptionInterface $e) { // Follow information to ConnectController
             $e->setAccessToken($token->getCredentials());

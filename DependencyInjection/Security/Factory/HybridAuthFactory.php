@@ -84,6 +84,7 @@ class HybridAuthFactory extends AbstractFactory
             ->setDefinition($providerId, new DefinitionDecorator('security.authentication.provider.hybridauth'))
             ->addArgument($this->createHybridAuthAwareUserProvider($container, $id, $config['hybridauth_user_provider']))
             ->addArgument($this->getHybridAuthProviderMapReference())
+            ->addArgument(new Reference('sllh_hybridauth.user_checker'))
         ;
         return $providerId;
     }
