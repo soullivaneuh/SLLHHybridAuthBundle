@@ -1,0 +1,16 @@
+<script type="text/javascript">
+function onLinkedInLoad() {
+    IN.Event.on(IN, "auth", onLinkedInAuth);
+}
+
+function onLinkedInAuth() {
+     IN.API.Profile("me").result(function (p) {
+        sllh_auth_require('{{ url }}');
+     });
+}
+</script>
+<script type="text/javascript" src="http://platform.linkedin.com/in.js">
+  api_key: {{ config.keys.key }}
+  onLoad: onLinkedInLoad
+  authorize: true
+</script>

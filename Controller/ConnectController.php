@@ -202,6 +202,8 @@ class ConnectController extends ContainerAware
         if ($request->cookies->get('sllh_hybridauth_logout')) {
             return new Response();
         }
+        
+        // TODO: Fix issue when user auth in social network but not in website...
 
         // TODO: Add option for enabled/disabled auto_connect (TWIG ?)
 

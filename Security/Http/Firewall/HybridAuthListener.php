@@ -15,7 +15,8 @@ use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener,
     Symfony\Component\Security\Core\Authentication\Token\TokenInterface,
     Symfony\Component\HttpFoundation\Response,
     Symfony\Component\Security\Http\Event\InteractiveLoginEvent,
-    Symfony\Component\Security\Http\SecurityEvents;
+    Symfony\Component\Security\Http\SecurityEvents,
+    Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
     SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken;
@@ -134,6 +135,9 @@ class HybridAuthListener implements ListenerInterface
 
         if ($this->requiresAuthentication($request)) {
             $response = $this->tryAuthentication($event, $request);
+            if ($response === null) {
+                return ;
+            }
         }
         else if (null === $response = $this->tryAutoConnect($event, $request)) {
             return ;
@@ -179,13 +183,20 @@ class HybridAuthListener implements ListenerInterface
      */
     private function tryAutoConnect(GetResponseEvent $event, Request $request)
     {
+        // TODO: PHP auto connec is really usefull ?
         if (!$this->securityContext->getToken()) {
             foreach ($this->providerMap->getConnectedAdapters() as $adapterName) {
-                $adapter = $this->providerMap->getProviderAdapterByName($adapterName);
+                $adapter = $this->providerMap->getProviderAdapterByName($adapterName, true);
                 $token =  $this->generateToken($adapter);
-                $returnValue = $this->authenticationManager->authenticate($token);
-                if (null !== $returnValue) {
-                    return $this->onAuthenticated($event, $request, $returnValue);
+                try {
+                    $returnValue = $this->authenticationManager->authenticate($token);
+                    if (null !== $returnValue) {
+                        $this->logger->info('Auto connection with '.$adapter->id.' provider');
+                        return $this->onAuthenticated($event, $request, $returnValue);
+                    }
+                }
+                catch (AuthenticationException $e) {
+                    return null;
                 }
             }
         }
@@ -215,8 +226,7 @@ class HybridAuthListener implements ListenerInterface
             }
 
             if (null === $returnValue = $this->attemptAuthentication($request)) {
-                $this->logger->err('attemptAuthentication failed');
-                return;
+                return null;
             }
 
             $response = $this->onAuthenticated($event, $request, $returnValue);

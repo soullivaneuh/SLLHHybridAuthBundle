@@ -1,4 +1,14 @@
 {% block sllh_hybridauth_content %}
+    <script type="text/javascript">
+        var sllh_auth_url = false;
+        function sllh_auth_require(url) {
+            if (sllh_auth_url != false) {
+                return ;
+            }
+            sllh_auth_url = url;
+            location.href = url;
+        }
+    </script>
     {% for provider in providers %}
         {% include 'SLLHHybridAuthBundle:Connect:auth_list/auth_' ~ provider.name | lower ~ '.html.twig' ignore missing with {'url': provider.url, 'config': provider.config} %}
     {% endfor %}
