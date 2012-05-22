@@ -21,6 +21,19 @@ interface HybridAuthAwareUserProviderInterface
      * @throws UsernameNotFoundException if the user is not found
      */
     function loadUserByHybridAuthResponse(HybridAuthResponseInterface $response);    
+    
+    
+    /**
+     * Loads the user by a given social name and identifier
+     *
+     * @param string $name          Name of the social network
+     * @param string $identifier
+     *
+     * @return UserInterface
+     *
+     * @throws UsernameNotFoundException if the user is not found
+     */
+    function loadUserByIdentifier($name, $identifier);
 }
 
 ?>

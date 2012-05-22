@@ -1,12 +1,16 @@
 {% block sllh_hybridauth_content %}
     <script type="text/javascript">
         var sllh_auth_url = false;
-        function sllh_auth_require(url) {
+        function sllh_auth_require(url, name, uid) {
             if (sllh_auth_url != false) {
                 return ;
             }
-            sllh_auth_url = url;
-            location.href = url;
+            $.post('{{ path('hybridauth_connect_check_identifier') }}', { name: name, identifier: uid }, function(data) {
+                if (data == '1') {
+                    sllh_auth_url = url;
+                    location.href = url;
+                }
+            }, 'text');
         }
     </script>
     {% for provider in providers %}

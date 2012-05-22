@@ -8,7 +8,7 @@ $(document).ready(function () {
     });
     VD.getLoginStatus(function(response) {  
         if (response.session) {  
-            sllh_auth_require('{{ url }}');
+            sllh_auth_require('{{ url }}', 'viadeo', '4242');
         }
         else {
             console.debug('noooo');

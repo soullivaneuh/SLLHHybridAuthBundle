@@ -11,7 +11,8 @@ use Symfony\Component\DependencyInjection\ContainerAware,
     Symfony\Component\Security\Core\SecurityContext,
     Symfony\Component\Security\Core\User\UserInterface,
     Symfony\Component\Locale\Exception\NotImplementedException,
-    Symfony\Component\Form\Form;
+    Symfony\Component\Form\Form,
+    Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
     
 use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotLinkedException,
     SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse;
@@ -213,6 +214,26 @@ class ConnectController extends ContainerAware
         ));
     }
 
+    public function checkIdentifierAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException("This action can be only call by XHR Post request.");
+        }
+        $name = $request->request->get('name');
+        $identifier = $request->request->get('identifier');
+        if (!$name || !$identifier) {
+            throw new \RuntimeException("You must pass a name and identifier");
+        }
+        $userProvider = $this->container->get('sllh_hybridauth.user.provider.entity.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
+        
+        try {
+            $user = $userProvider->loadUserByIdentifier($name, $identifier);
+            return new Response('1', 200, array('Content-Type' => 'text/plain'));
+        }
+        catch (AuthenticationException $e) {
+            return new Response('0', 200, array('Content-Type' => 'text/plain'));
+        }
+    }
 
     /**
      * Gets a list of providers for connectAction

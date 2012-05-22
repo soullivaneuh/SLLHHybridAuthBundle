@@ -5,7 +5,7 @@ function onLinkedInLoad() {
 
 function onLinkedInAuth() {
      IN.API.Profile("me").result(function (p) {
-        sllh_auth_require('{{ url }}');
+         sllh_auth_require('{{ url }}', 'linkedin', p.values[0].id);
      });
 }
 </script>

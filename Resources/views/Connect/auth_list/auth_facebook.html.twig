@@ -8,10 +8,10 @@ window.fbAsyncInit = function() {
         xfbml      : true  // parse XFBML
     });
     
-    // listen for and handle auth.statusChange events
-    FB.Event.subscribe('auth.statusChange', function(response) {
-        if (response.authResponse) {
-            sllh_auth_require('{{ url }}');
+    FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') {
+            var uid = response.authResponse.userID;
+            sllh_auth_require('{{ url }}', 'facebook', uid);
         }
     });
 };
