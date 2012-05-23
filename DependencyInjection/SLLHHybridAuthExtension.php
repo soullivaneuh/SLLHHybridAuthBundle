@@ -37,6 +37,7 @@ class SLLHHybridAuthExtension extends Extension
                 unset($config['hybridauth_config']['providers'][$name]['scope']);
             }
         }
+        $config['hybridauth_config']['debug_mode'] = $config['hybridauth_config']['debug_file'] != '' ? true : false;
         $container->setParameter('sllh_hybridauth.config', $config['hybridauth_config']);
 
 //        $providers_names = array();
