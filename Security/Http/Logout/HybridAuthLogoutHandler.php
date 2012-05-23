@@ -30,7 +30,7 @@ class HybridAuthLogoutHandler implements LogoutHandlerInterface
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
         $this->providerMap->getHybridAuth()->logoutAllProviders();
-        $response->headers->setCookie(new Cookie('sllh_hybridauth_logout', true, 0, '/', 'localsf2.dowith.fr', false));
+        $response->headers->setCookie(new Cookie('sllh_hybridauth_logout', true, 0, '/', $request->getHost(), false));
     }
 }
 
