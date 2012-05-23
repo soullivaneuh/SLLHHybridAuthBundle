@@ -247,6 +247,7 @@ class HybridAuthListener implements ListenerInterface
     private function generateToken(Hybrid_Provider_Adapter $adapter)
     {
         $adapterToken = $adapter->getAccessToken();
+        $this->logger->info('Generate '.$adapter->id.' HybridAuthToken (access_token: '.$adapterToken['access_token'].', config: '.  serialize($adapter->config));
         return new HybridAuthToken($adapterToken['access_token'], $adapter->id);        
     }
     
