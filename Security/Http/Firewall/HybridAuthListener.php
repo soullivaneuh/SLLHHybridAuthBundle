@@ -20,7 +20,8 @@ use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener,
     Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 
 use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
-    SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken;
+    SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken,
+    SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException;
 
 use \Hybrid_Auth;
 use \Hybrid_Provider_Adapter;
@@ -166,7 +167,12 @@ class HybridAuthListener implements ListenerInterface
     protected function attemptAuthentication(Request $request)
     {
         // Get a Hybrid_Provider_Adapter by user's authentication to the social network with HybridAuth
-        $adapter = $this->providerMap->getProviderAdapterByRequest($request);
+        try {
+            $adapter = $this->providerMap->getProviderAdapterByRequest($request);
+        } catch (AccountNotConnectedException $e) {
+            $this->logger->err('Social provider authentication failed with config: '.serialize($this->providerMap->config));
+            throw $e;
+        }
         
         // Create a token with the social network authentication
         $token =  $this->generateToken($adapter);

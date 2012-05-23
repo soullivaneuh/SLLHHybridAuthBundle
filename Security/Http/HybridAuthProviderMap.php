@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\Security\Http\HttpUtils,
     Symfony\Component\DependencyInjection\ContainerInterface;
 
+use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException;
+
 use \Hybrid_Auth;
 
 /**
@@ -73,7 +75,13 @@ class HybridAuthProviderMap
                     : null
             ;
         }
-        return $this->getHybridAuth()->authenticate($name);
+        try {
+            return $this->getHybridAuth()->authenticate($name);
+        } catch (Exception $e) {
+            $ex = new AccountNotConnectedException($e->getMessage, null, $e->getCode(), $e);
+            $ex->setProviderName($name);
+            throw $ex;
+        }
     }
     
     /**
