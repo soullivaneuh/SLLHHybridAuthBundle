@@ -167,12 +167,7 @@ class HybridAuthListener implements ListenerInterface
     protected function attemptAuthentication(Request $request)
     {
         // Get a Hybrid_Provider_Adapter by user's authentication to the social network with HybridAuth
-        try {
-            $adapter = $this->providerMap->getProviderAdapterByRequest($request);
-        } catch (AccountNotConnectedException $e) {
-            $this->logger->err('Social provider authentication failed with config: '.serialize($this->providerMap->config));
-            throw $e;
-        }
+        $adapter = $this->providerMap->getProviderAdapterByRequest($request);
         
         // Create a token with the social network authentication
         $token =  $this->generateToken($adapter);
