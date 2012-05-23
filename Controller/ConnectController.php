@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerAware,
     Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
     
 use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotLinkedException,
+    SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException,
     SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse;
 
 /**
@@ -91,7 +92,13 @@ class ConnectController extends ContainerAware
         
         // Get social account informations
         $adapter = $this->container->get('sllh_hybridauth.provider_map')->getProviderAdapterByName($name);
-        $response = new HybridAuthResponse($adapter); // TODO: check return value
+        try {
+            $response = new HybridAuthResponse($adapter);
+        }
+        catch (AccountNotConnectedException $e) {
+            $checkPaths = $this->container->getParameter('sllh_hybridauth.provider_map.configured.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
+            return new RedirectResponse($request->getUriForPath($checkPaths[$e->getProviderName()]));
+        }
         
         // Save the current HybridAuth session if form submitted
         $session->set('hybrid_auth.session_data', $this->container->get('sllh_hybridauth.provider_map')->getSessionData());

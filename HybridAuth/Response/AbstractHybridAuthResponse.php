@@ -2,12 +2,13 @@
 
 namespace SLLH\HybridAuthBundle\HybridAuth\Response;
 
-use SLLH\HybridAuthBundle\HybridAuth\HybridAuthResponseInterface;
+use SLLH\HybridAuthBundle\HybridAuth\HybridAuthResponseInterface,
+    SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException;
 
 use \Hybrid_Provider_Adapter;
 
-use \DateTime;
-use \Normalizer;
+use DateTime;
+use Exception;
 
 /**
  * AbstractHybridAuthResponse
@@ -34,7 +35,15 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     public function __construct(Hybrid_Provider_Adapter $adapter)
     {
         $this->adapter = $adapter;
-        $this->userProfile = $this->adapter->getUserProfile();
+        try {
+            $this->userProfile = $this->adapter->getUserProfile();
+        }
+        catch (Exception $e) {
+            $e = new AccountNotConnectedException($e->getMessage(), null, $e->getCode(), $e);
+            $e->setProviderName($this->adapter->id);
+            $this->adapter->logout();
+            throw $e;
+        }
     }
     
     public function __destruct()

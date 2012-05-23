@@ -38,9 +38,9 @@ class HybridAuthProviderMap
     /**
      * Constructor
      * 
-     * @param HttpUtils $httpUtils          HttpUtils
-     * @param array     $config             HybridAuth config
-     * @param array     $providers          Configured providers with checkPaths in security configuration file
+     * @param ContainerInterface    $container 
+     * @param HttpUtils             $httpUtils          HttpUtils
+     * @param array                 $providers          Configured providers with checkPaths in security configuration file
      */
     public function __construct(ContainerInterface $container, HttpUtils $httpUtils, array $providers)
     {
