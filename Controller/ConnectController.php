@@ -41,6 +41,10 @@ class ConnectController extends ContainerAware
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
         $session = $request->getSession();
         
+        if ($hasUser) {
+            return new RedirectResponse($this->container->get('router')->generate('homepage'));
+        }
+        
         $error = $this->getErrorForRequest($request);
         
         // Follow to register form with social network informations
