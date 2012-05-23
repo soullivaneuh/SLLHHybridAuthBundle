@@ -166,12 +166,26 @@ class ConnectController extends ContainerAware
         if (!$connect && !$hasUser) {
             return new RedirectResponse($this->container->get('router')->generate('homepage'));
         }
+
+        // If form submitted, restore previous HybridAuth session to not recheck oauth connection
+        if ($request->getMethod() === 'POST' && $session->get('hybrid_auth.session_data')) {
+            $this->container->get('sllh_hybridauth.provider_map')->setSessionData($session->get('hybrid_auth.session_data'));
+        }
         
         // Get social account informations
         $adapter = $this->container->get('sllh_hybridauth.provider_map')->getProviderAdapterByName($name);
-        $response = new HybridAuthResponse($adapter); // TODO: check return value
+        try {
+            $response = new HybridAuthResponse($adapter);
+        }
+        catch (AccountNotConnectedException $e) {
+            $checkPaths = $this->container->getParameter('sllh_hybridauth.provider_map.configured.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
+            return new RedirectResponse($request->getUriForPath($checkPaths[$e->getProviderName()]));
+        }
         
-        // Get identifier from cofirmation
+        // Save the current HybridAuth session if form submitted
+        $session->set('hybrid_auth.session_data', $this->container->get('sllh_hybridauth.provider_map')->getSessionData());
+        
+        // Get identifier from confirmation
         $uid = $session->get('hybrid_auth.link_confirm');
         $session->remove('hybrid_auth.link_confirm');
         
