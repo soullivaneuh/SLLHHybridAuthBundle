@@ -46,6 +46,7 @@ class ConnectController extends ContainerAware
         if ($connect && !$hasUser && $error instanceof AccountNotLinkedException) {
             $key = uniqid($error->getProviderName().'-');
             $session->set('hybrid_auth.connection_error', $error);
+            $session->set('hybrid_auth.register_with', $error->getProviderName());
             return new RedirectResponse($this->container->get('router')->generate('hybridauth_connect_register'));
         }
 
@@ -72,7 +73,7 @@ class ConnectController extends ContainerAware
         
         // Get and remove error from session
         $error = $session->get('hybrid_auth.connection_error');
-        
+        $name = $session->get('hybrid_auth.register_with');
         
         // Check if connect option is enabled
         if (!$connect) {
@@ -83,13 +84,17 @@ class ConnectController extends ContainerAware
             return new RedirectResponse($this->container->get('router')->generate('homepage'));
         }
         
+        // If form submitted, restore previous HybridAuth session to not recheck oauth connection
+        if ($request->getMethod() === 'POST' && $session->get('hybrid_auth.session_data')) {
+            $this->container->get('sllh_hybridauth.provider_map')->setSessionData($session->get('hybrid_auth.session_data'));
+        }
+        
         // Get social account informations
-        $adapter = $this->container->get('sllh_hybridauth.provider_map')->getProviderAdapterByName($error->getProviderName());
+        $adapter = $this->container->get('sllh_hybridauth.provider_map')->getProviderAdapterByName($name);
         $response = new HybridAuthResponse($adapter); // TODO: check return value
         
-//        echo '<pre>';
-//        print_r($response->getUserProfile());
-//        die();
+        // Save the current HybridAuth session if form submitted
+        $session->set('hybrid_auth.session_data', $this->container->get('sllh_hybridauth.provider_map')->getSessionData());
         
         // Get form and form handler form config.yml
         $form = $this->container->get('sllh_hybridauth.registration.form');
@@ -98,6 +103,7 @@ class ConnectController extends ContainerAware
         if ($processed) {
             // Removing session cause of succed
             $session->remove('hybrid_auth.connection_error');
+            $session->remove('hybrid_auth.register_with');
             
             // Now we link the account to the created user
             // TODO: check if connect_provider implement good classes
@@ -112,7 +118,6 @@ class ConnectController extends ContainerAware
             // TODO: add param for register_success path ? twig_template ?
             return $this->registerActionSuccess($request, $form, $response);
         }
-        
         
         return $this->registerActionSuccess($request, $form, $response, $error);
     }
@@ -228,6 +233,7 @@ class ConnectController extends ContainerAware
         
         try {
             $user = $userProvider->loadUserByIdentifier($name, $identifier);
+            $this->container->get('sllh_hybridauth.user_checker')->checkPostAuth($user);
             return new Response('1', 200, array('Content-Type' => 'text/plain'));
         }
         catch (AuthenticationException $e) {

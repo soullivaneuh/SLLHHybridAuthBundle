@@ -37,6 +37,11 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
         $this->userProfile = $this->adapter->getUserProfile();
     }
     
+    public function __destruct()
+    {
+        $this->adapter->logout();
+    }
+    
     /**
      * {@inheritDoc}
      */

@@ -102,7 +102,17 @@ class HybridAuthProviderMap
     {
         return $this->getHybridAuth()->getConnectedProviders();
     }
-        
+    
+    public function getSessionData()
+    {
+        return $this->getHybridAuth()->getSessionData();
+    }
+    
+    public function setSessionData($sessiondata)
+    {
+        $this->getHybridAuth()->restoreSessionData($sessiondata);
+    }
+
     /**
      * Gets the Hybrid_Auth api
      * 

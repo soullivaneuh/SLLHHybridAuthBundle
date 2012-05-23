@@ -185,22 +185,22 @@ class HybridAuthListener implements ListenerInterface
     private function tryAutoConnect(GetResponseEvent $event, Request $request)
     {
         // TODO: PHP auto connec is really usefull ?
-        if (!$this->securityContext->getToken()) {
-            foreach ($this->providerMap->getConnectedAdapters() as $adapterName) {
-                $adapter = $this->providerMap->getProviderAdapterByName($adapterName, true);
-                $token =  $this->generateToken($adapter);
-                try {
-                    $returnValue = $this->authenticationManager->authenticate($token);
-                    if (null !== $returnValue) {
-                        $this->logger->info('Auto connection with '.$adapter->id.' provider');
-                        return $this->onAuthenticated($event, $request, $returnValue);
-                    }
-                }
-                catch (AuthenticationException $e) {
-                    return null;
-                }
-            }
-        }
+//        if (!$this->securityContext->getToken()) {
+//            foreach ($this->providerMap->getConnectedAdapters() as $adapterName) {
+//                $adapter = $this->providerMap->getProviderAdapterByName($adapterName, true);
+//                $token =  $this->generateToken($adapter);
+//                try {
+//                    $returnValue = $this->authenticationManager->authenticate($token);
+//                    if (null !== $returnValue) {
+//                        $this->logger->info('Auto connection with '.$adapter->id.' provider');
+//                        return $this->onAuthenticated($event, $request, $returnValue);
+//                    }
+//                }
+//                catch (AuthenticationException $e) {
+//                    return null;
+//                }
+//            }
+//        }
         return null;
     }
     
