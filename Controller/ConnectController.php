@@ -57,7 +57,7 @@ class ConnectController extends ContainerAware
 
         // TODO: make a success_path in security.yml or config.yml
         return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:login.html.twig', array(
-            'error'         => $error ? $error->getMessage() : '',
+            'sllh_error'    => $error ? $error->getMessage() : '',
             'providers'     => $this->getProvidersForConnect($request, $hasUser),
         ));
     }

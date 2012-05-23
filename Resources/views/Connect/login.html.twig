@@ -1,6 +1,8 @@
 {% extends 'SLLHHybridAuthBundle::layout.html.twig' %}
 
 {% block sllh_hybridauth_content %}
-<div class="error">{{ error }}</div>
+{% if sllh_error %}
+    <div class="error">{{ sllh_error }}</div>
+{% endif %}
 <div>{% include 'SLLHHybridAuthBundle:Connect:providers.html.twig' %}</div>
 {% endblock sllh_hybridauth_content %}
