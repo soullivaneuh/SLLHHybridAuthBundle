@@ -56,19 +56,19 @@ class HybridAuthProvider implements AuthenticationProviderInterface
     public function authenticate(TokenInterface $token)
     {
         $adapter = $this->providerMap->getProviderAdapterByName($token->getProvider());
-        
-        // Making a HybridAuthResponse
-        $responseNamespace = 'SLLH\HybridAuthBundle\HybridAuth\Response\\';
-        $responseClass = $responseNamespace.$adapter->id.'AuthResponse';
-        if (class_exists($responseClass)) {
-            $response = new $responseClass($adapter);
-        }
-        else {
-            $response = new HybridAuthResponse($adapter);            
-        }
-        
+
         // Getting the user by the selected provider
         try {
+            // Making a HybridAuthResponse
+            $responseNamespace = 'SLLH\HybridAuthBundle\HybridAuth\Response\\';
+            $responseClass = $responseNamespace.$adapter->id.'AuthResponse';
+            if (class_exists($responseClass)) {
+                $response = new $responseClass($adapter);
+            }
+            else {
+                $response = new HybridAuthResponse($adapter);
+            }
+
             // TODO: check if userProvider implements good classes
             $user = $this->userProvider->loadUserByHybridAuthResponse($response);
             
@@ -78,6 +78,7 @@ class HybridAuthProvider implements AuthenticationProviderInterface
         catch (HybridAuthExceptionInterface $e) { // Follow information to ConnectController
             $e->setAccessToken($token->getCredentials());
             $e->setProviderName($token->getProvider());
+            $adapter->logout();
             throw $e;
         }
         
