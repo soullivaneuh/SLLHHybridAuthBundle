@@ -8,9 +8,9 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
- * Description of SLLHHybridAuthExtension
+ * Class SLLHHybridAuthExtension
  *
- * @author Sullivan SENECHAL <soullivaneuh@gmail.com>
+ * @author Sullivan Senechal <soullivaneuh@gmail.com>
  */
 class SLLHHybridAuthExtension extends Extension
 {
