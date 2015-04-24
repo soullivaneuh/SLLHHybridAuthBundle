@@ -2,13 +2,10 @@
 
 namespace SLLH\HybridAuthBundle\DependencyInjection;
 
-use Symfony\Component\Config\FileLocator,
-    Symfony\Component\Config\Definition\Processor,
-    Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\DependencyInjection\Reference,
-    Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
-    Symfony\Component\HttpKernel\DependencyInjection\Extension,
-    Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * Description of SLLHHybridAuthExtension
@@ -28,7 +25,7 @@ class SLLHHybridAuthExtension extends Extension
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        
+
         $container->setParameter('sllh_hybridauth.firewall_name', $config['firewall_name']);
 
         // Clean and set HybridAuth config
@@ -45,20 +42,20 @@ class SLLHHybridAuthExtension extends Extension
 //            $providers_names[] = $name;
 //        }
 //        $container->setParameter('sllh_hybridauth.providers', $providers_names
-        
+
         $container->setParameter('sllh_hybridauth.connect', isset($config['connect']));
         if (isset($config['connect'])) {
             // Links the specified service for connect
             foreach ($config['connect']['services'] as $key => $serviceId) {
                 $container->setAlias('sllh_hybridauth.'.str_replace('_', '.', $key), $serviceId);
             }
-            
+
             $container->setParameter('sllh_hybridauth.auth_after_register', $config['connect']['auth_after_register']);
-            
+
             $container->setAlias('sllh_hybridauth.user_checker', 'security.user_checker');
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -2,19 +2,13 @@
 
 namespace SLLH\HybridAuthBundle\HybridAuth\Response;
 
-use SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse;
-
-use \Hybrid_Provider_Adapter;
-
-use \DateTime;
-
 /**
  * AbstractHybridAuthResponse
  *
  * @author Sullivan SENECHAL <soullivaneuh@gmail.com>
  */
 class TwitterAuthResponse extends HybridAuthResponse
-{    
+{
     /**
      * {@inheritDoc}
      */
@@ -26,7 +20,7 @@ class TwitterAuthResponse extends HybridAuthResponse
         }
         return NULL;
     }
-    
+
     /**
      * {@inheritDoc}
      */

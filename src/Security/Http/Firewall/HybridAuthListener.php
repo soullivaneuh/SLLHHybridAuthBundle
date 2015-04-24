@@ -2,33 +2,28 @@
 
 namespace SLLH\HybridAuthBundle\Security\Http\Firewall;
 
+use Hybrid_Provider_Adapter;
+use SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken;
+use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
-use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener,
-    Symfony\Component\Security\Http\Firewall\ListenerInterface,
-    Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpKernel\Event\GetResponseEvent,
-    Symfony\Component\Security\Core\SecurityContextInterface,
-    Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface,
-    Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface,
-    Symfony\Component\Security\Http\HttpUtils,
-    Symfony\Component\HttpKernel\Log\LoggerInterface,
-    Symfony\Component\EventDispatcher\EventDispatcherInterface,
-    Symfony\Component\Security\Core\Authentication\Token\TokenInterface,
-    Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\Security\Http\Event\InteractiveLoginEvent,
-    Symfony\Component\Security\Http\SecurityEvents,
-    Symfony\Component\Security\Core\Exception\AuthenticationException,
-    Symfony\Component\Security\Core\Exception\SessionUnavailableException;
-
-use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
-    SLLH\HybridAuthBundle\Security\Core\Authentication\Token\HybridAuthToken,
-    SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException;
-
-use \Hybrid_Auth;
-use \Hybrid_Provider_Adapter;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Firewall\ListenerInterface;
+use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
+use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
 
 /**
  * Description of HybridAuthListener

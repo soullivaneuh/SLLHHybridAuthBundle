@@ -2,13 +2,12 @@
 
 namespace SLLH\HybridAuthBundle\Security\Http\Logout;
 
-use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface,
-    Symfony\Component\Security\Core\Authentication\Token\TokenInterface,
-    Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpFoundation\Cookie;
-
 use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 
 /**
  * HybridAuthLogoutHandler
@@ -26,7 +25,7 @@ class HybridAuthLogoutHandler implements LogoutHandlerInterface
     {
         $this->providerMap = $providerMap;
     }
-    
+
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
         $this->providerMap->getHybridAuth()->logoutAllProviders();

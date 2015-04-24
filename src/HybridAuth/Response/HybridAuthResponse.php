@@ -2,8 +2,6 @@
 
 namespace SLLH\HybridAuthBundle\HybridAuth\Response;
 
-use SLLH\HybridAuthBundle\HybridAuth\Response\AbstractHybridAuthResponse;
-
 /**
  * HybridAuthResponse
  *

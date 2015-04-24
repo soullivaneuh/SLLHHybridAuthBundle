@@ -2,22 +2,21 @@
 
 namespace SLLH\HybridAuthBundle\Controller;
 
-use Symfony\Component\DependencyInjection\ContainerAware,
-    Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpFoundation\RedirectResponse,
-    Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken,
-    Symfony\Component\Security\Core\Exception\AuthenticationException,
-    Symfony\Component\Security\Core\SecurityContext,
-    Symfony\Component\Security\Core\User\UserInterface,
-    Symfony\Component\Locale\Exception\NotImplementedException,
-    Symfony\Component\Form\Form,
-    Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotLinkedException,
-    SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException,
-    SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse;
+use SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse;
+use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException;
+use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotLinkedException;
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Locale\Exception\NotImplementedException;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * HybridAuthController

@@ -2,8 +2,8 @@
 
 namespace SLLH\HybridAuthBundle\HybridAuth;
 
-use \Hybrid_User_Profile,
-    \Hybrid_Provider_Adapter;
+use Hybrid_Provider_Adapter;
+use Hybrid_User_Profile;
 
 /**
  * HybridAuthResponseInterface

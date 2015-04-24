@@ -2,14 +2,12 @@
 
 namespace SLLH\HybridAuthBundle\HybridAuth\Response;
 
-use Hybrid_User_Profile;
-use SLLH\HybridAuthBundle\HybridAuth\HybridAuthResponseInterface,
-    SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException;
-
-use \Hybrid_Provider_Adapter;
-
 use DateTime;
 use Exception;
+use Hybrid_Provider_Adapter;
+use Hybrid_User_Profile;
+use SLLH\HybridAuthBundle\HybridAuth\HybridAuthResponseInterface;
+use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException;
 
 /**
  * AbstractHybridAuthResponse

@@ -2,14 +2,12 @@
 
 namespace SLLH\HybridAuthBundle\Security\Http;
 
+use Hybrid_Auth;
 use Hybrid_Provider_Adapter;
-use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\Security\Http\HttpUtils,
-    Symfony\Component\DependencyInjection\ContainerInterface;
-
 use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException;
-
-use \Hybrid_Auth;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\HttpUtils;
 
 /**
  * Description of HybridAuthProviderMap

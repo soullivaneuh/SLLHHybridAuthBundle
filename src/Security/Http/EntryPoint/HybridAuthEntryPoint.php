@@ -2,10 +2,10 @@
 
 namespace SLLH\HybridAuthBundle\Security\Http\EntryPoint;
 
-use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface,
-    Symfony\Component\Security\Core\Exception\AuthenticationException,
-    Symfony\Component\Security\Http\HttpUtils,
-    Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Component\Security\Http\HttpUtils;
 
 /**
  * HybridAuthEntryPoint
@@ -18,15 +18,15 @@ class HybridAuthEntryPoint implements AuthenticationEntryPointInterface
      * @var Symfony\Component\Security\Http\HttpUtils
      */
     private $httpUtils;
-    
+
     /**
-     * @var string 
+     * @var string
      */
     private $loginPath;
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param HttpUtils             $httpUtils
      * @param string                $loginPath
      */
@@ -37,7 +37,7 @@ class HybridAuthEntryPoint implements AuthenticationEntryPointInterface
     }
 
     /**
-     * @{inheritDoc} 
+     * @{inheritDoc}
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {

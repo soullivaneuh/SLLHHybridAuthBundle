@@ -2,12 +2,12 @@
 
 namespace SLLH\HybridAuthBundle\DependencyInjection\Security\Factory;
 
-use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory,
-    Symfony\Component\Config\Definition\Builder\NodeDefinition,
-    Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\DependencyInjection\DefinitionDecorator,
-    Symfony\Component\DependencyInjection\Parameter,
-    Symfony\Component\DependencyInjection\Reference;
+use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Parameter;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Description of HybridAuthFactory
@@ -24,13 +24,13 @@ class HybridAuthFactory extends AbstractFactory
         $container->register($this->getHybridAuthLogoutHandlerReference(), '%sllh_hybridauth.http.logout.handler.hybridauth.class%')
                 ->addArgument(new Reference('sllh_hybridauth.provider_map'))
         ;
-        
+
         $container->getDefinition('security.logout_listener')
                 ->addMethodCall('addHandler', array($this->getHybridAuthLogoutHandlerReference()))
         ;
         return parent::create($container, $id, $config, $userProviderId, $defaultEntryPointId);
     }
-    
+
     /**
      * Creates a resource owner map for the given configuration.
      *
@@ -53,15 +53,15 @@ class HybridAuthFactory extends AbstractFactory
             ->addArgument(new Parameter('sllh_hybridauth.provider_map.configured.'.$id))
         ;
     }
-    
+
     /**
-     * Get a reference to the logout listener 
+     * Get a reference to the logout listener
      */
     protected function getHybridAuthLogoutHandlerReference()
     {
         return new Reference('security.http.logout.handler.hybridauth');
     }
-    
+
     /**
      * Get a reference to the HybridAuth provider map
      */
@@ -69,7 +69,7 @@ class HybridAuthFactory extends AbstractFactory
     {
         return new Reference('sllh_hybridauth.provider_map');
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -77,9 +77,9 @@ class HybridAuthFactory extends AbstractFactory
     {
 //        $providerId = 'sllh_hybridauth.authentication.provider.hybridauth.'.$id;
         $providerId = 'security.authentication.provider.hybridauth.'.$id;
-        
+
         $this->createHybridAuthProviderMap($container, $id, $config);
-        
+
         $container
             ->setDefinition($providerId, new DefinitionDecorator('security.authentication.provider.hybridauth'))
             ->addArgument($this->createHybridAuthAwareUserProvider($container, $id, $config['hybridauth_user_provider']))
@@ -91,12 +91,12 @@ class HybridAuthFactory extends AbstractFactory
 
     /**
      * Assign the selected userProvider
-     * 
+     *
      * @param ContainerBuilder $container
      * @param string $id
      * @param array $config
-     * 
-     * @return \Symfony\Component\DependencyInjection\Reference 
+     *
+     * @return \Symfony\Component\DependencyInjection\Reference
      */
     protected function createHybridAuthAwareUserProvider(ContainerBuilder $container, $id, $config)
     {
@@ -131,7 +131,7 @@ class HybridAuthFactory extends AbstractFactory
 
         return $entryPointId;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -150,16 +150,16 @@ class HybridAuthFactory extends AbstractFactory
 
         return $listenerId;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public function addConfiguration(NodeDefinition $node)
     {
         parent::addConfiguration($node);
-        
+
         $builder = $node->children();
-        
+
         $builder
             ->scalarNode('login_path')
                 ->cannotBeEmpty()
@@ -203,7 +203,7 @@ class HybridAuthFactory extends AbstractFactory
             ->end()
         ;
     }
-    
+
     /**
      * {@inheritDoc}
      */
