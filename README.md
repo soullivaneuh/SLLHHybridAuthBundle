@@ -2,7 +2,7 @@
 
 Integrates [HybridAuth](https://github.com/hybridauth/hybridauth) library on Symfony.
 
-**Please not this bundle is not ready to use yet!**
+**Please note: This bundle is not ready to use yet!**
 
 [![Latest Stable Version](https://poser.pugx.org/sllh/hybridauth-bundle/v/stable)](https://packagist.org/packages/sllh/hybridauth-bundle)
 [![Latest Unstable Version](https://poser.pugx.org/sllh/hybridauth-bundle/v/unstable)](https://packagist.org/packages/sllh/hybridauth-bundle)
