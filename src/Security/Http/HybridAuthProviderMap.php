@@ -2,6 +2,7 @@
 
 namespace SLLH\HybridAuthBundle\Security\Http;
 
+use Hybrid_Provider_Adapter;
 use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\Security\Http\HttpUtils,
     Symfony\Component\DependencyInjection\ContainerInterface;
@@ -21,26 +22,26 @@ class HybridAuthProviderMap
      * @var ContainerInterface
      */
     private $container;
-    
+
     /**
      * @var HttpUtils
      */
     private $httpUtils;
-    
+
     /**
-     * @var array 
+     * @var array
      */
     private $providers;
-    
+
     /**
-     * @var Hybrid_Auth 
+     * @var Hybrid_Auth
      */
     private $hybridauth;
-    
+
     /**
      * Constructor
-     * 
-     * @param ContainerInterface    $container 
+     *
+     * @param ContainerInterface    $container
      * @param HttpUtils             $httpUtils          HttpUtils
      * @param array                 $providers          Configured providers with checkPaths in security configuration file
      */
@@ -51,13 +52,13 @@ class HybridAuthProviderMap
         $this->providers = $providers;
         $this->hybridauth = false;
     }
-    
+
     /**
      * Gets the appropriate ProviderAdapter given the name.
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      * @param boolean $connected    If true, just try to get connected provider
-     * 
+     *
      * @return null|Hybrid_Provider_Adapter
      */
     public function getProviderAdapterByName($name, $connected = false)
@@ -66,7 +67,7 @@ class HybridAuthProviderMap
         if (!array_key_exists($name, $hybridauth_config['providers'])) {
             return null;
         } // TODO: Throw directly if provider not configured ?
-        
+
         // TODO: Catch error and return null: Authentification failed! Facebook returned an invalide user id.
         // TODO: add additional params ($this->config['providers'][$name]['auth_params'])
         if ($connected == true) {
@@ -83,12 +84,12 @@ class HybridAuthProviderMap
             throw $ex;
         }
     }
-    
+
     /**
      * Gets the appropriate ProviderAdapter for a request
-     * 
+     *
      * @param type $request
-     * 
+     *
      * @return null|Hybrid_Provider_Adapter
      */
     public function getProviderAdapterByRequest(Request $request)
@@ -100,22 +101,22 @@ class HybridAuthProviderMap
         }
         return null;
     }
-    
+
     /**
      * Gets all connected adapter
-     * 
-     * @return array 
+     *
+     * @return array
      */
     public function getConnectedAdapters()
     {
         return $this->getHybridAuth()->getConnectedProviders();
     }
-    
+
     public function getSessionData()
     {
         return $this->getHybridAuth()->getSessionData();
     }
-    
+
     public function setSessionData($sessiondata)
     {
         $this->getHybridAuth()->restoreSessionData($sessiondata);
@@ -123,8 +124,8 @@ class HybridAuthProviderMap
 
     /**
      * Gets the Hybrid_Auth api
-     * 
-     * @return type 
+     *
+     * @return type
      */
     public function getHybridAuth()
     {

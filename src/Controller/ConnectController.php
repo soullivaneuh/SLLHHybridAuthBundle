@@ -13,10 +13,11 @@ use Symfony\Component\DependencyInjection\ContainerAware,
     Symfony\Component\Locale\Exception\NotImplementedException,
     Symfony\Component\Form\Form,
     Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-    
+
 use SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotLinkedException,
     SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException,
     SLLH\HybridAuthBundle\HybridAuth\Response\HybridAuthResponse;
+use Symfony\Component\Security\Core\Exception\AccountStatusException;
 
 /**
  * HybridAuthController
@@ -27,12 +28,12 @@ class ConnectController extends ContainerAware
 {
     /**
      * Action for login form
-     * 
+     *
      * If connect enabled, redirect to a registration form if social network account is not linked
      * to the database.
-     * 
+     *
      * @param Request $request
-     * 
+     *
      * @return Response
      */
     public final function connectAction(Request $request)
@@ -40,13 +41,13 @@ class ConnectController extends ContainerAware
         $connect = $this->container->getParameter('sllh_hybridauth.connect');
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
         $session = $request->getSession();
-        
+
         if ($hasUser) {
             return new RedirectResponse($this->container->get('router')->generate('homepage'));
         }
-        
+
         $error = $this->getErrorForRequest($request);
-        
+
         // Follow to register form with social network informations
         if ($connect && !$hasUser && $error instanceof AccountNotLinkedException) {
             $key = uniqid($error->getProviderName().'-');
@@ -61,13 +62,13 @@ class ConnectController extends ContainerAware
             'providers'     => $this->getProvidersForConnect($request, $hasUser),
         ));
     }
-    
+
     /**
      * Show a register form with social network account information (fill by form handler)
      * Connect option MUST be enabled for working
-     * 
-     * @param Request $request 
-     * 
+     *
+     * @param Request $request
+     *
      * @return Response
      */
     public final function registerAction(Request $request)
@@ -75,11 +76,11 @@ class ConnectController extends ContainerAware
         $connect = $this->container->getParameter('sllh_hybridauth.connect');
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
         $session = $request->getSession();
-        
+
         // Get and remove error from session
         $error = $session->get('hybrid_auth.connection_error');
         $name = $session->get('hybrid_auth.register_with');
-        
+
         // Check if connect option is enabled
         if (!$connect) {
             throw new \Exception("Connect option MUST be activated");
@@ -88,12 +89,12 @@ class ConnectController extends ContainerAware
         if ($hasUser || !$error instanceof AccountNotLinkedException) {
             return new RedirectResponse($this->container->get('router')->generate('homepage'));
         }
-        
+
         // If form submitted, restore previous HybridAuth session to not recheck oauth connection
         if ($request->getMethod() === 'POST' && $session->get('hybrid_auth.session_data')) {
             $this->container->get('sllh_hybridauth.provider_map')->setSessionData($session->get('hybrid_auth.session_data'));
         }
-        
+
         // Get social account informations
         $adapter = $this->container->get('sllh_hybridauth.provider_map')->getProviderAdapterByName($name);
         try {
@@ -103,10 +104,10 @@ class ConnectController extends ContainerAware
             $checkPaths = $this->container->getParameter('sllh_hybridauth.provider_map.configured.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
             return new RedirectResponse($request->getUriForPath($checkPaths[$e->getProviderName()]));
         }
-        
+
         // Save the current HybridAuth session if form submitted
         $session->set('hybrid_auth.session_data', $this->container->get('sllh_hybridauth.provider_map')->getSessionData());
-        
+
         // Get form and form handler form config.yml
         $form = $this->container->get('sllh_hybridauth.registration.form');
         $formHandler = $this->container->get('sllh_hybridauth.registration.form.handler'); // TODO: check if the class implements good interface
@@ -115,11 +116,11 @@ class ConnectController extends ContainerAware
             // Removing session cause of succed
             $session->remove('hybrid_auth.connection_error');
             $session->remove('hybrid_auth.register_with');
-            
+
             // Now we link the account to the created user
             // TODO: check if connect_provider implement good classes
             $this->container->get('sllh_hybridauth.connect.provider')->connect($form->getData(), $response);
-            
+
             // Authenticate the user
             if ($this->container->getParameter('sllh_hybridauth.auth_after_register') === true) {
                 $this->authenticateUser($form->getData());
@@ -129,10 +130,10 @@ class ConnectController extends ContainerAware
             // TODO: add param for register_success path ? twig_template ?
             return $this->registerActionSuccess($request, $form, $response);
         }
-        
+
         return $this->registerActionSuccess($request, $form, $response, $error);
     }
-    
+
     protected function registerActionSuccess(Request $request, Form $form, HybridAuthResponse $response, AccountNotLinkedException $error = NULL)
     {
         // Register and connect done
@@ -147,13 +148,13 @@ class ConnectController extends ContainerAware
             'user_profile'      => $response->getUserProfile()
         ));
     }
-    
+
     /**
-     * Link a social network account to a 
-     * 
-     * @param Request $request 
+     * Link a social network account to a
+     *
+     * @param Request $request
      * @param string $name          Name of the social network
-     * 
+     *
      * @return Response
      */
     public final function linkAction(Request $request, $name)
@@ -161,7 +162,7 @@ class ConnectController extends ContainerAware
         $connect = $this->container->getParameter('sllh_hybridauth.connect');
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
         $session = $request->getSession();
-        
+
         // Redirect to homepage if connect option is not set or if there is no authenticated user
         if (!$connect && !$hasUser) {
             return new RedirectResponse($this->container->get('router')->generate('homepage'));
@@ -171,7 +172,7 @@ class ConnectController extends ContainerAware
         if ($request->getMethod() === 'POST' && $session->get('hybrid_auth.session_data')) {
             $this->container->get('sllh_hybridauth.provider_map')->setSessionData($session->get('hybrid_auth.session_data'));
         }
-        
+
         // Get social account informations
         $adapter = $this->container->get('sllh_hybridauth.provider_map')->getProviderAdapterByName($name);
         try {
@@ -181,51 +182,51 @@ class ConnectController extends ContainerAware
             $checkPaths = $this->container->getParameter('sllh_hybridauth.provider_map.configured.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
             return new RedirectResponse($request->getUriForPath($checkPaths[$e->getProviderName()]));
         }
-        
+
         // Save the current HybridAuth session if form submitted
         $session->set('hybrid_auth.session_data', $this->container->get('sllh_hybridauth.provider_map')->getSessionData());
-        
+
         // Get identifier from confirmation
         $uid = $session->get('hybrid_auth.link_confirm');
         $session->remove('hybrid_auth.link_confirm');
-        
+
         $form = $this->container->get('form.factory')->createBuilder('form')->getForm();
-        
+
         // Check if the social identifier is the same after confirmation
         if ($request->getMethod() === 'POST' && $uid === $response->getIdentifier()) {
             $form->bindRequest($request);
 
             if ($form->isValid()) {
                 $user = $this->container->get('security.context')->getToken()->getUser();
-                
+
                 // Links the user to the new social network
                 // TODO: check if the class connector implements good interface
                 $this->container->get('sllh_hybridauth.connect.provider')->connect($user, $response);
-                
+
                 return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:link_success.html.twig', array(
                     'provider'      => $adapter->id,
                     'user_profile'  => $response->getUserProfile()
                 ));
             }
         }
-        
+
         // Set identifier for confirmation
         $session->set('hybrid_auth.link_confirm', $response->getIdentifier());
-        
+
         return $this->container->get('templating')->renderResponse('SLLHHybridAuthBundle:Connect:link_confirmation.html.twig', array(
             'form'          => $form->createView(),
             'provider'      => $adapter->id,
             'user_profile'  => $response->getUserProfile()
         ));
     }
-    
+
     /**
      * Generate a template with js sdks for providers
      * Auth a provider to hybridauth when the name is given
-     * 
-     * @param Request $request 
+     *
+     * @param Request $request
      * @param string $name          Name of the social network
-     * 
+     *
      * @return Response
      */
     public function authAction(Request $request, $name = null)
@@ -233,7 +234,7 @@ class ConnectController extends ContainerAware
         if ($request->cookies->get('sllh_hybridauth_logout')) {
             return new Response();
         }
-        
+
         // TODO: Fix issue when user auth in social network but not in website...
 
         // TODO: Add option for enabled/disabled auto_connect (TWIG ?)
@@ -255,7 +256,7 @@ class ConnectController extends ContainerAware
             throw new \RuntimeException("You must pass a name and identifier");
         }
         $userProvider = $this->container->get('sllh_hybridauth.user.provider.entity.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
-        
+
         try {
             $user = $userProvider->loadUserByIdentifier($name, $identifier);
             $this->container->get('sllh_hybridauth.user_checker')->checkPostAuth($user);
@@ -268,17 +269,17 @@ class ConnectController extends ContainerAware
 
     /**
      * Gets a list of providers for connectAction
-     * 
+     *
      * @param Request $request
      * @param boolean $hasUser
-     * 
+     *
      * @return array
      */
     protected function getProvidersForConnect(Request $request, $hasUser)
     {
         $providerMap = $this->container->getParameter('sllh_hybridauth.provider_map.configured.'.$this->container->getParameter('sllh_hybridauth.firewall_name'));
         $configs = $this->container->getParameter('sllh_hybridauth.config');
-        
+
         $providers = array();
         foreach ($providerMap as $name => $checkPath) {
             $providers[$name] = array(
@@ -289,22 +290,22 @@ class ConnectController extends ContainerAware
                 'config'    => $configs['providers'][$name]
             );
         }
-        
+
         return $providers;
     }
-    
+
     /**
      * Gets a list of providers for authAction
-     * 
+     *
      * @param Request $request
      * @param boolean $hasUser
-     * 
+     *
      * @return array
      */
     protected function getProvidersForAuth(Request $request)
     {
         $configs = $this->container->getParameter('sllh_hybridauth.config');
-        
+
         $providers = array();
         foreach ($configs['providers'] as $name => $config) {
             $providers[$name] = array(
@@ -313,10 +314,10 @@ class ConnectController extends ContainerAware
                 'config'    => $config
             );
         }
-        
+
         return $providers;
     }
-    
+
     /**
      * Gets the security error for a given request.
      *
@@ -340,10 +341,10 @@ class ConnectController extends ContainerAware
 
         return $error;
     }
-    
+
     /**
      * Authenticate a user with Symfony Security
-     * 
+     *
      * @param UserInterface $user
      */
     protected function authenticateUser(UserInterface $user)
@@ -359,7 +360,7 @@ class ConnectController extends ContainerAware
         $token = new UsernamePasswordToken($user, null, $providerKey, $user->getRoles());
 
         $this->container->get('security.context')->setToken($token);
-    }    
+    }
 }
 
 ?>

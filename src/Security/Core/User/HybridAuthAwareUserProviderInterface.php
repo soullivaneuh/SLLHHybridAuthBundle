@@ -3,10 +3,12 @@
 namespace SLLH\HybridAuthBundle\Security\Core\User;
 
 use SLLH\HybridAuthBundle\HybridAuth\HybridAuthResponseInterface;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * HybridAuthAwareUserProviderInterface
- * 
+ *
  * @author Sullivan SENECHAL <soullivaneuh@gmail.com>
  */
 interface HybridAuthAwareUserProviderInterface
@@ -20,9 +22,9 @@ interface HybridAuthAwareUserProviderInterface
      *
      * @throws UsernameNotFoundException if the user is not found
      */
-    function loadUserByHybridAuthResponse(HybridAuthResponseInterface $response);    
-    
-    
+    function loadUserByHybridAuthResponse(HybridAuthResponseInterface $response);
+
+
     /**
      * Loads the user by a given social name and identifier
      *

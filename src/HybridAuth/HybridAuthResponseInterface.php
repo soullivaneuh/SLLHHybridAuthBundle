@@ -7,85 +7,85 @@ use \Hybrid_User_Profile,
 
 /**
  * HybridAuthResponseInterface
- * 
+ *
  * @author Sullivan SENECHAL <soullivaneuh@gmail.com>
  */
 interface HybridAuthResponseInterface
 {
     /**
-     * Gets user social network identifier 
-     * 
+     * Gets user social network identifier
+     *
      * @return string
      */
     public function getIdentifier();
-    
+
     /**
      * Gets as possibly a correct username
-     * 
-     * @return null|string 
+     *
+     * @return null|string
      */
     public function getUsername();
-    
+
     /**
      * Gets as possibly a correct email
-     * 
-     * @return null|string 
+     *
+     * @return null|string
      */
     public function getEmail();
-    
+
     /**
      * Gets as possibly a correct first name
-     * 
-     * @return null|string 
+     *
+     * @return null|string
      */
     public function getFirstName();
-    
+
     /**
      * Gets as possibly a correct last name
-     * 
-     * @return null|string 
+     *
+     * @return null|string
      */
     public function getLastName();
-    
+
     /**
      * Gets as possibly a correct birthday object
-     * 
-     * @return null|DateTime
+     *
+     * @return null|\DateTime
      */
     public function getBirthday();
-    
+
     /**
      * Gets user social network profile
-     * 
+     *
      * @return Hybrid_User_Profile
      */
     public function getUserProfile();
-    
+
     /**
-     * Getss user social network contacts list 
-     * 
+     * Getss user social network contacts list
+     *
      * @return null|array
      */
     public function getUserContactsList();
-    
+
     /**
      * Gets user social network activity
-     * 
-     * @return null|array 
+     *
+     * @return null|array
      */
     public function getUserActivity();
-    
+
     /**
      * Gets provider's name
-     * 
+     *
      * @return string
      */
     public function getProviderName();
-    
+
     /**
      * Gets the Hybrid_Provider_Adapter of the authenticated user
-     * 
-     * @return Hybrid_Provider_Adapter 
+     *
+     * @return Hybrid_Provider_Adapter
      */
     public function getProviderAdapter();
 }

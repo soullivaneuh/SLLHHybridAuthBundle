@@ -2,6 +2,7 @@
 
 namespace SLLH\HybridAuthBundle\HybridAuth\Response;
 
+use Hybrid_User_Profile;
 use SLLH\HybridAuthBundle\HybridAuth\HybridAuthResponseInterface,
     SLLH\HybridAuthBundle\Security\Core\Exception\AccountNotConnectedException;
 
@@ -18,7 +19,7 @@ use Exception;
 class AbstractHybridAuthResponse implements HybridAuthResponseInterface
 {
     /**
-     * @var Hybrid_Provider_Adapter 
+     * @var Hybrid_Provider_Adapter
      */
     protected $adapter;
 
@@ -26,11 +27,11 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
      * @var Hybrid_User_Profile
      */
     protected $userProfile;
-    
+
     /**
      * Constructor
-     * 
-     * @param Hybrid_Provider_Adapter $adapter 
+     *
+     * @param Hybrid_Provider_Adapter $adapter
      */
     public function __construct(Hybrid_Provider_Adapter $adapter)
     {
@@ -45,12 +46,12 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
             throw $e;
         }
     }
-    
+
     public function __destruct()
     {
         $this->adapter->logout();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -66,7 +67,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     {
         return $this->cleanString($this->getUserProfile()->displayName);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -74,7 +75,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     {
         return $this->getUserProfile()->email;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -82,7 +83,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     {
         return $this->getUserProfile()->firstName;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -90,7 +91,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     {
         return $this->getUserProfile()->lastName;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -104,7 +105,7 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -146,13 +147,13 @@ class AbstractHybridAuthResponse implements HybridAuthResponseInterface
     {
         return $this->adapter;
     }
-    
+
     /**
      * Remove all specials characters
-     * 
+     *
      * @param string $str
-     * 
-     * @return string 
+     *
+     * @return string
      */
     private final function cleanString($str)
     {

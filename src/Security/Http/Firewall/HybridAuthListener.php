@@ -2,6 +2,9 @@
 
 namespace SLLH\HybridAuthBundle\Security\Http\Firewall;
 
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener,
     Symfony\Component\Security\Http\Firewall\ListenerInterface,
     Symfony\Component\HttpFoundation\Request,
@@ -25,6 +28,7 @@ use SLLH\HybridAuthBundle\Security\Http\HybridAuthProviderMap,
 
 use \Hybrid_Auth;
 use \Hybrid_Provider_Adapter;
+use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 
 /**
  * Description of HybridAuthListener
@@ -45,17 +49,17 @@ class HybridAuthListener implements ListenerInterface
     private $successHandler;
     private $failureHandler;
     private $rememberMeServices;
-    
+
     /**
      * @var HybridAuthProviderMap
      */
     private $providerMap;
-    
+
     /**
      * @var array
      */
     private $checkPaths;
-    
+
     /**
      * Constructor.
      *
@@ -97,27 +101,27 @@ class HybridAuthListener implements ListenerInterface
         $this->dispatcher = $dispatcher;
         $this->httpUtils = $httpUtils;
     }
-    
+
     /**
      * Set providerMap, called from HybridAuthFactory
-     * 
+     *
      * @param HybridAuthProviderMap $providerMap
      */
     public function setProviderMap(HybridAuthProviderMap $providerMap)
     {
         $this->providerMap = $providerMap;
     }
-    
+
     /**
      * Set checkPaths, called from HybridAuthFactory
-     * 
-     * @param array $checkPaths 
+     *
+     * @param array $checkPaths
      */
     public function setCheckPaths(array $checkPaths)
     {
         $this->checkPaths = $checkPaths;
     }
-    
+
     /**
      * Sets the RememberMeServices implementation to use
      *
@@ -144,10 +148,10 @@ class HybridAuthListener implements ListenerInterface
         else if (null === $response = $this->tryAutoConnect($event, $request)) {
             return ;
         }
-        
+
         $event->setResponse($response);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -168,19 +172,19 @@ class HybridAuthListener implements ListenerInterface
     {
         // Get a Hybrid_Provider_Adapter by user's authentication to the social network with HybridAuth
         $adapter = $this->providerMap->getProviderAdapterByRequest($request);
-        
+
         // Create a token with the social network authentication
         $token =  $this->generateToken($adapter);
-        
+
         return $this->authenticationManager->authenticate($token);
     }
-    
+
     /**
      * Try to auto connect with hybrid_auth sessions
-     * 
+     *
      * @param GetResponseEvent $event
      * @param Request $request
-     * 
+     *
      * @return null|Response
      */
     private function tryAutoConnect(GetResponseEvent $event, Request $request)
@@ -204,17 +208,17 @@ class HybridAuthListener implements ListenerInterface
 //        }
         return null;
     }
-    
+
     /**
      * Try to be authenticate with a specific provider
-     * 
+     *
      * @param GetResponseEvent $event
      * @param Request $request
-     * 
+     *
      * @return Response
-     * 
+     *
      * @throws RuntimeException
-     * @throws SessionUnavailableException 
+     * @throws SessionUnavailableException
      */
     private function tryAuthentication(GetResponseEvent $event, Request $request)
     {
@@ -237,25 +241,25 @@ class HybridAuthListener implements ListenerInterface
         }
         return $response;
     }
-    
+
     /**
      * Generate a HybridAuthToken with adapter
-     * 
+     *
      * @param Hybrid_Provider_Adapter $adapter
-     * 
-     * @return HybridAuthToken 
+     *
+     * @return HybridAuthToken
      */
     private function generateToken(Hybrid_Provider_Adapter $adapter)
     {
         $adapterToken = $adapter->getAccessToken();
         $this->logger->info('Generate '.$adapter->id.' HybridAuthToken (access_token: '.$adapterToken['access_token'].', config: '.  serialize($adapter->config));
-        return new HybridAuthToken($adapterToken['access_token'], $adapter->id);        
+        return new HybridAuthToken($adapterToken['access_token'], $adapter->id);
     }
-    
+
     /**
      * Return correct Response with the returnValue
-     * 
-     * @param type $returnValue 
+     *
+     * @param type $returnValue
      */
     private function onAuthenticated(GetResponseEvent $event, Request $request, $returnValue)
     {
@@ -270,7 +274,7 @@ class HybridAuthListener implements ListenerInterface
         }
         return $response;
     }
-    
+
     private function onFailure(GetResponseEvent $event, Request $request, AuthenticationException $failed)
     {
         if (null !== $this->logger) {
