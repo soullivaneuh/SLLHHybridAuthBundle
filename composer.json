@@ -23,10 +23,10 @@
         "matthiasnoback/symfony-dependency-injection-test": "~0.7"
     },
     "autoload": {
-        "psr-4": { "SLLH\\IsoCodesValidatorBundle\\": "src" }
+        "psr-4": { "SLLH\\HybridAuthBundle\\": "src" }
     },
     "autoload-dev": {
-        "psr-4": { "SLLH\\IsoCodesValidatorBundle\\Tests\\": "tests" }
+        "psr-4": { "SLLH\\HybridAuthBundle\\Tests\\": "tests" }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
