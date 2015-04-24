@@ -14,7 +14,7 @@ Integrates [HybridAuth](https://github.com/hybridauth/hybridauth) library on Sym
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Soullivaneuh/SLLHHybridAuthBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Soullivaneuh/SLLHHybridAuthBundle/?branch=master)
 [![Code Climate](https://codeclimate.com/github/Soullivaneuh/SLLHHybridAuthBundle/badges/gpa.svg)](https://codeclimate.com/github/Soullivaneuh/SLLHHybridAuthBundle)
 [![Coverage Status](https://coveralls.io/repos/Soullivaneuh/SLLHHybridAuthBundle/badge.svg?branch=master)](https://coveralls.io/r/Soullivaneuh/SLLHHybridAuthBundle?branch=master)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/af4f2270-b639-4c04-bee7-773d7a22d93f/mini.png)](https://insight.sensiolabs.com/projects/af4f2270-b639-4c04-bee7-773d7a22d93f)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/158b027e-ef93-4130-bdfd-9e6902d316d9/mini.png)](https://insight.sensiolabs.com/projects/158b027e-ef93-4130-bdfd-9e6902d316d9)
 
 ## Prerequisites
 
