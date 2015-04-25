@@ -1,9 +1,0 @@
-{% extends 'SLLHHybridAuthBundle::layout.html.twig' %}
-
-{% block sllh_hybridauth_content %}
-    <h3>You are now linked with {{ provider }}</h3>
-    <div>
-        <img src="{{ user_profile.photoURL }}" />
-        <span>{{ user_profile.displayName }}</span>
-    </div>
-{% endblock sllh_hybridauth_content %}
