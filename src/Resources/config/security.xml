@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="sllh_hybrid_auth.security.authentication.provider.class">Security\Core\Authentication\Provider\HybridAuthProvider</parameter>
+        <parameter key="sllh_hybrid_auth.security.authentication.listener.class">Security\Http\Firewall\HybridAuthListener</parameter>
+    </parameters>
+
+    <services>
+        <service id="sllh_hybrid_auth.security.authentication.provider"
+                 class="%sllh_hybrid_auth.security.authentication.provider.class%"
+                 public="false" abstract="true">
+            <argument />
+        </service>
+
+        <service id="sllh_hybrid_auth.security.authentication.listener"
+                 class="%sllh_hybrid_auth.security.authentication.listener.class%"
+                 public="false" abstract="true">
+            <argument type="service" id="security.context"/>
+            <argument type="service" id="security.authentication.provider.anonymous"/>
+            <argument type="service" id="security.authentication.session_strategy"/>
+            <argument type="service" id="security.http_utils"/>
+            <argument />
+            <argument type="service" id="security.authentication.simple_success_failure_handler"/>
+            <argument type="service" id="security.authentication.custom_failure_handler"/>
+            <argument />
+        </service>
+    </services>
+</container>
