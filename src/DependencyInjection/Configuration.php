@@ -21,7 +21,7 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder();
 
-        $rootNode = $builder->root('sllh_hybridauth');
+        $rootNode = $builder->root('sllh_hybrid_auth');
 
         $rootNode
         // FIXME : xml adptable config

@@ -61,7 +61,7 @@ class SLLHHybridAuthExtension extends Extension
      */
     public function getAlias()
     {
-        return 'sllh_hybridauth';
+        return 'sllh_hybrid_auth';
     }
 }
 
