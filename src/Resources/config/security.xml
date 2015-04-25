@@ -12,7 +12,7 @@
     <services>
         <service id="sllh_hybrid_auth.security.authentication.provider"
                  class="%sllh_hybrid_auth.security.authentication.provider.class%"
-                 public="false" abstract="true">
+                 public="false">
             <argument />
         </service>
 
@@ -20,7 +20,7 @@
                  class="%sllh_hybrid_auth.security.authentication.listener.class%"
                  public="false" abstract="true">
             <argument type="service" id="security.context"/>
-            <argument type="service" id="security.authentication.provider.anonymous"/>
+            <argument type="service" id="sllh_hybrid_auth.security.authentication.provider"/>
             <argument type="service" id="security.authentication.session_strategy"/>
             <argument type="service" id="security.http_utils"/>
             <argument />
