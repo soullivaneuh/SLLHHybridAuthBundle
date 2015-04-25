@@ -31,5 +31,3 @@ class SLLHHybridAuthExtension extends Extension
         return 'sllh_hybrid_auth';
     }
 }
-
-?>
