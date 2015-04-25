@@ -4,6 +4,15 @@ Integrates [HybridAuth](https://github.com/hybridauth/hybridauth) library on Sym
 
 **Please note: This bundle is not ready to use yet!**
 
+I'm making a discussion with the HybridAuth's maintainers to make this project feasible.
+
+Please see: https://github.com/hybridauth/hybridauth/issues/456
+
+If it's accepted for HybridAuth 3.x, this bundle will supports this version.
+Otherwise, it will be abandoned because HybridAuth not compatible with Symfony.
+
+If you think I'm wrong or just want to add arguments on [this discussion](https://github.com/hybridauth/hybridauth/issues/456), feel free to add some comments! ;-)
+
 [![Latest Stable Version](https://poser.pugx.org/sllh/hybridauth-bundle/v/stable)](https://packagist.org/packages/sllh/hybridauth-bundle)
 [![Latest Unstable Version](https://poser.pugx.org/sllh/hybridauth-bundle/v/unstable)](https://packagist.org/packages/sllh/hybridauth-bundle)
 [![License](https://poser.pugx.org/sllh/hybridauth-bundle/license)](https://packagist.org/packages/sllh/hybridauth-bundle)
