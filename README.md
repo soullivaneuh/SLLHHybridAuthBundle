@@ -16,6 +16,7 @@ If you think I'm wrong or just want to add arguments on [this discussion](https:
 [![Latest Stable Version](https://poser.pugx.org/sllh/hybridauth-bundle/v/stable)](https://packagist.org/packages/sllh/hybridauth-bundle)
 [![Latest Unstable Version](https://poser.pugx.org/sllh/hybridauth-bundle/v/unstable)](https://packagist.org/packages/sllh/hybridauth-bundle)
 [![License](https://poser.pugx.org/sllh/hybridauth-bundle/license)](https://packagist.org/packages/sllh/hybridauth-bundle)
+[![Dependency Status](https://www.versioneye.com/php/sllh:hybridauth-bundle/badge.svg)](https://www.versioneye.com/php/sllh:hybridauth-bundle)
 
 [![Total Downloads](https://poser.pugx.org/sllh/hybridauth-bundle/downloads)](https://packagist.org/packages/sllh/hybridauth-bundle)
 [![Monthly Downloads](https://poser.pugx.org/sllh/hybridauth-bundle/d/monthly)](https://packagist.org/packages/sllh/hybridauth-bundle)
