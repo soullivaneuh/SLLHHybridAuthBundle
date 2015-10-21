@@ -44,7 +44,9 @@ cache:
 before_script:
   - composer selfupdate
   - composer config -g github-oauth.github.com $GITHUB_OAUTH_TOKEN
+  - composer global require phpunit/phpunit:@stable --no-update
   - composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update
+  - composer global update --prefer-dist --no-interaction
   - composer update --prefer-dist $COMPOSER_FLAGS
 
 script:
